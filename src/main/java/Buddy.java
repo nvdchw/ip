@@ -12,17 +12,17 @@ public class Buddy {
             String trimmed = input.trim();
             int space = trimmed.indexOf(' ');
             String keyword = (space == -1) ? trimmed : trimmed.substring(0, space);
-            switch (keyword) {
-                case "list": return LIST;
-                case "mark": return MARK;
-                case "unmark": return UNMARK;
-                case "todo": return TODO;
-                case "deadline": return DEADLINE;
-                case "event": return EVENT;
-                case "delete": return DELETE;
-                case "bye": return BYE;
-                default: return UNKNOWN;
-            }
+            return switch (keyword) {
+                case "list" -> LIST;
+                case "mark" -> MARK;
+                case "unmark" -> UNMARK;
+                case "todo" -> TODO;
+                case "deadline" -> DEADLINE;
+                case "event" -> EVENT;
+                case "delete" -> DELETE;
+                case "bye" -> BYE;
+                default -> UNKNOWN;
+            };
         }
     }
 
@@ -167,29 +167,14 @@ public class Buddy {
             if (cmd == Command.BYE) break;
             try {
                 switch (cmd) {
-                    case LIST:
-                        handleList(commands);
-                        break;
-                    case MARK:
-                        handleMark(commands, userInput);
-                        break;
-                    case UNMARK:
-                        handleUnmark(commands, userInput);
-                        break;
-                    case DELETE:
-                        handleDelete(commands, userInput);
-                        break;
-                    case TODO:
-                        handleTodo(commands, userInput);
-                        break;
-                    case DEADLINE:
-                        handleDeadline(commands, userInput);
-                        break;
-                    case EVENT:
-                        handleEvent(commands, userInput);
-                        break;
-                    default:
-                        throw new BuddyException("I don't recognize that command.");
+                    case LIST -> handleList(commands);
+                    case MARK -> handleMark(commands, userInput);
+                    case UNMARK -> handleUnmark(commands, userInput);
+                    case DELETE -> handleDelete(commands, userInput);
+                    case TODO -> handleTodo(commands, userInput);
+                    case DEADLINE -> handleDeadline(commands, userInput);
+                    case EVENT -> handleEvent(commands, userInput);
+                    default -> throw new BuddyException("I don't recognize that command.");
                 }
             } catch (BuddyException e) {
                 printBox("Oh No! " + e.getMessage());
