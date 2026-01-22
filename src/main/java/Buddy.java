@@ -2,6 +2,74 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Buddy {
+    private static void handleList(ArrayList<Task> commands) {
+        System.out.println("    ____________________________________________________________");
+        System.out.println("    Here are the tasks in your list:");
+        for (int i = 0; i < commands.size(); i++) {
+            System.out.println("    " + (i + 1) + "." + commands.get(i));
+        }
+        System.out.println("    ____________________________________________________________");
+    }
+
+    private static void handleMark(ArrayList<Task> commands, String userInput) {
+        int taskIndex = Integer.parseInt(userInput.substring(5)) - 1;
+        commands.get(taskIndex).markAsDone();
+        System.out.println("    ____________________________________________________________");
+        System.out.println("    Nice! I've marked this task as done:");
+        System.out.println("      " + commands.get(taskIndex));
+        System.out.println("    ____________________________________________________________");
+    }
+
+    private static void handleUnmark(ArrayList<Task> commands, String userInput) {
+        int taskIndex = Integer.parseInt(userInput.substring(7)) - 1;
+        commands.get(taskIndex).markAsUndone();
+        System.out.println("    ____________________________________________________________");
+        System.out.println("    OK, I've marked this task as not done yet:");
+        System.out.println("      " + commands.get(taskIndex));
+        System.out.println("    ____________________________________________________________");
+    }
+
+    private static void handleTodo(ArrayList<Task> commands, String userInput) {
+        String description = userInput.substring(5);
+        Task task = new Todo(description);
+        commands.add(task);
+        System.out.println("    ____________________________________________________________");
+        System.out.println("    Got it. I've added this task:");
+        System.out.println("      " + task);
+        System.out.println("    Now you have " + commands.size() + " tasks in the list.");
+        System.out.println("    ____________________________________________________________");
+    }
+
+    private static void handleDeadline(ArrayList<Task> commands, String userInput) {
+        String content = userInput.substring(9);
+        int byIndex = content.indexOf(" /by ");
+        String description = content.substring(0, byIndex);
+        String by = content.substring(byIndex + 5);
+        Task task = new Deadline(description, by);
+        commands.add(task);
+        System.out.println("    ____________________________________________________________");
+        System.out.println("    Got it. I've added this task:");
+        System.out.println("      " + task);
+        System.out.println("    Now you have " + commands.size() + " tasks in the list.");
+        System.out.println("    ____________________________________________________________");
+    }
+
+    private static void handleEvent(ArrayList<Task> commands, String userInput) {
+        String content = userInput.substring(6);
+        int fromIndex = content.indexOf(" /from ");
+        int toIndex = content.indexOf(" /to ");
+        String description = content.substring(0, fromIndex);
+        String from = content.substring(fromIndex + 7, toIndex);
+        String to = content.substring(toIndex + 5);
+        Task task = new Event(description, from, to);
+        commands.add(task);
+        System.out.println("    ____________________________________________________________");
+        System.out.println("    Got it. I've added this task:");
+        System.out.println("      " + task);
+        System.out.println("    Now you have " + commands.size() + " tasks in the list.");
+        System.out.println("    ____________________________________________________________");
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         ArrayList<Task> commands = new ArrayList<>();
@@ -20,61 +88,17 @@ public class Buddy {
 
         while (!userInput.equals("bye")) {
             if (userInput.equals("list")) {
-                System.out.println("    ____________________________________________________________");
-                System.out.println("    Here are the tasks in your list:");
-                for (int i = 0; i < commands.size(); i++) {
-                    System.out.println("    " + (i+1) + "." + commands.get(i));
-                }
-                System.out.println("    ____________________________________________________________");
+                handleList(commands);
             } else if (userInput.startsWith("mark ")) {
-                int taskIndex = Integer.parseInt(userInput.substring(5)) - 1;
-                commands.get(taskIndex).markAsDone();
-                System.out.println("    ____________________________________________________________");
-                System.out.println("    Nice! I've marked this task as done:");
-                System.out.println("      " + commands.get(taskIndex));
-                System.out.println("    ____________________________________________________________");
+                handleMark(commands, userInput);
             } else if (userInput.startsWith("unmark ")) {
-                int taskIndex = Integer.parseInt(userInput.substring(7)) - 1;
-                commands.get(taskIndex).markAsUndone();
-                System.out.println("    ____________________________________________________________");
-                System.out.println("    OK, I've marked this task as not done yet:");
-                System.out.println("      " + commands.get(taskIndex));
-                System.out.println("    ____________________________________________________________");
+                handleUnmark(commands, userInput);
             } else if (userInput.startsWith("todo ")) {
-                String description = userInput.substring(5);
-                Task task = new Todo(description);
-                commands.add(task);
-                System.out.println("    ____________________________________________________________");
-                System.out.println("    Got it. I've added this task:");
-                System.out.println("      " + task);
-                System.out.println("    Now you have " + commands.size() + " tasks in the list.");
-                System.out.println("    ____________________________________________________________");
+                handleTodo(commands, userInput);
             } else if (userInput.startsWith("deadline ")) {
-                String content = userInput.substring(9);
-                int byIndex = content.indexOf(" /by ");
-                String description = content.substring(0, byIndex);
-                String by = content.substring(byIndex + 5);
-                Task task = new Deadline(description, by);
-                commands.add(task);
-                System.out.println("    ____________________________________________________________");
-                System.out.println("    Got it. I've added this task:");
-                System.out.println("      " + task);
-                System.out.println("    Now you have " + commands.size() + " tasks in the list.");
-                System.out.println("    ____________________________________________________________");
+                handleDeadline(commands, userInput);
             } else if (userInput.startsWith("event ")) {
-                String content = userInput.substring(6);
-                int fromIndex = content.indexOf(" /from ");
-                int toIndex = content.indexOf(" /to ");
-                String description = content.substring(0, fromIndex);
-                String from = content.substring(fromIndex + 7, toIndex);
-                String to = content.substring(toIndex + 5);
-                Task task = new Event(description, from, to);
-                commands.add(task);
-                System.out.println("    ____________________________________________________________");
-                System.out.println("    Got it. I've added this task:");
-                System.out.println("      " + task);
-                System.out.println("    Now you have " + commands.size() + " tasks in the list.");
-                System.out.println("    ____________________________________________________________");
+                handleEvent(commands, userInput);
             }
             userInput = scanner.nextLine();
         }
