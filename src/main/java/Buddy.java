@@ -23,26 +23,43 @@ public class Buddy {
         printBox(lines);
     }
 
-    private static void handleMark(ArrayList<Task> commands, String userInput) {
-        int taskIndex = Integer.parseInt(userInput.substring(5)) - 1;
-        commands.get(taskIndex).markAsDone();
-        printBox(
-            "Nice! I've marked this task as done:",
-            "  " + commands.get(taskIndex)
-        );
+    private static void handleMark(ArrayList<Task> commands, String userInput) throws BuddyException {
+        try {
+            int taskIndex = Integer.parseInt(userInput.substring(5).trim()) - 1;
+            if (taskIndex < 0 || taskIndex >= commands.size()) {
+                throw new BuddyException("Task number does not exist.");
+            }
+            commands.get(taskIndex).markAsDone();
+            printBox(
+                "Nice! I've marked this task as done:",
+                "  " + commands.get(taskIndex)
+            );
+        } catch (NumberFormatException e) {
+            throw new BuddyException("Please provide a valid task number.");
+        }
     }
 
-    private static void handleUnmark(ArrayList<Task> commands, String userInput) {
-        int taskIndex = Integer.parseInt(userInput.substring(7)) - 1;
-        commands.get(taskIndex).markAsUndone();
-        printBox(
-            "OK, I've marked this task as not done yet:",
-            "  " + commands.get(taskIndex)
-        );
+    private static void handleUnmark(ArrayList<Task> commands, String userInput) throws BuddyException {
+        try {
+            int taskIndex = Integer.parseInt(userInput.substring(7).trim()) - 1;
+            if (taskIndex < 0 || taskIndex >= commands.size()) {
+                throw new BuddyException("Task number does not exist.");
+            }
+            commands.get(taskIndex).markAsUndone();
+            printBox(
+                "OK, I've marked this task as not done yet:",
+                "  " + commands.get(taskIndex)
+            );
+        } catch (NumberFormatException e) {
+            throw new BuddyException("Please provide a valid task number.");
+        }
     }
 
-    private static void handleTodo(ArrayList<Task> commands, String userInput) {
-        String description = userInput.substring(5);
+    private static void handleTodo(ArrayList<Task> commands, String userInput) throws BuddyException {
+        String description = userInput.length() > 5 ? userInput.substring(5).trim() : "";
+        if (description.isEmpty()) {
+            throw new BuddyException("A todo needs a description.");
+        }
         Task task = new Todo(description);
         commands.add(task);
         printBox(
@@ -52,11 +69,17 @@ public class Buddy {
         );
     }
 
-    private static void handleDeadline(ArrayList<Task> commands, String userInput) {
-        String content = userInput.substring(9);
+    private static void handleDeadline(ArrayList<Task> commands, String userInput) throws BuddyException {
+        String content = userInput.length() > 9 ? userInput.substring(9).trim() : "";
         int byIndex = content.indexOf(" /by ");
-        String description = content.substring(0, byIndex);
-        String by = content.substring(byIndex + 5);
+        if (content.isEmpty() || byIndex == -1) {
+            throw new BuddyException("Deadline format: deadline <desc> /by <time>");
+        }
+        String description = content.substring(0, byIndex).trim();
+        String by = content.substring(byIndex + 5).trim();
+        if (description.isEmpty() || by.isEmpty()) {
+            throw new BuddyException("Deadline needs both description and /by time.");
+        }
         Task task = new Deadline(description, by);
         commands.add(task);
         printBox(
@@ -66,13 +89,19 @@ public class Buddy {
         );
     }
 
-    private static void handleEvent(ArrayList<Task> commands, String userInput) {
-        String content = userInput.substring(6);
+    private static void handleEvent(ArrayList<Task> commands, String userInput) throws BuddyException {
+        String content = userInput.length() > 6 ? userInput.substring(6).trim() : "";
         int fromIndex = content.indexOf(" /from ");
         int toIndex = content.indexOf(" /to ");
-        String description = content.substring(0, fromIndex);
-        String from = content.substring(fromIndex + 7, toIndex);
-        String to = content.substring(toIndex + 5);
+        if (content.isEmpty() || fromIndex == -1 || toIndex == -1 || toIndex < fromIndex) {
+            throw new BuddyException("Event format: event <desc> /from <start> /to <end>");
+        }
+        String description = content.substring(0, fromIndex).trim();
+        String from = content.substring(fromIndex + 7, toIndex).trim();
+        String to = content.substring(toIndex + 5).trim();
+        if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
+            throw new BuddyException("Event needs description, start, and end time.");
+        }
         Task task = new Event(description, from, to);
         commands.add(task);
         printBox(
@@ -96,20 +125,24 @@ public class Buddy {
         String userInput = scanner.nextLine();
 
         while (!userInput.equals("bye")) {
-            if (userInput.equals("list")) {
-                handleList(commands);
-            } else if (userInput.startsWith("mark ")) {
-                handleMark(commands, userInput);
-            } else if (userInput.startsWith("unmark ")) {
-                handleUnmark(commands, userInput);
-            } else if (userInput.startsWith("todo ")) {
-                handleTodo(commands, userInput);
-            } else if (userInput.startsWith("deadline ")) {
-                handleDeadline(commands, userInput);
-            } else if (userInput.startsWith("event ")) {
-                handleEvent(commands, userInput);
-            } else {
-                printBox("I don't recognize that command.");
+            try {
+                if (userInput.equals("list")) {
+                    handleList(commands);
+                } else if (userInput.startsWith("mark ")) {
+                    handleMark(commands, userInput);
+                } else if (userInput.startsWith("unmark ")) {
+                    handleUnmark(commands, userInput);
+                } else if (userInput.startsWith("todo ")) {
+                    handleTodo(commands, userInput);
+                } else if (userInput.startsWith("deadline ")) {
+                    handleDeadline(commands, userInput);
+                } else if (userInput.startsWith("event ")) {
+                    handleEvent(commands, userInput);
+                } else {
+                    throw new BuddyException("I don't recognize that command.");
+                }
+            } catch (BuddyException e) {
+                printBox("Oh No! " + e.getMessage());
             }
             userInput = scanner.nextLine();
         }
