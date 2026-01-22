@@ -55,6 +55,23 @@ public class Buddy {
         }
     }
 
+    private static void handleDelete(ArrayList<Task> commands, String userInput) throws BuddyException {
+        try {
+            int taskIndex = Integer.parseInt(userInput.substring(7).trim()) - 1;
+            if (taskIndex < 0 || taskIndex >= commands.size()) {
+                throw new BuddyException("Task number does not exist.");
+            }
+            Task deletedTask = commands.remove(taskIndex);
+            printBox(
+                "Noted. I've removed this task:",
+                "  " + deletedTask,
+                "Now you have " + commands.size() + " tasks in the list."
+            );
+        } catch (NumberFormatException e) {
+            throw new BuddyException("Please provide a valid task number.");
+        }
+    }
+
     private static void handleTodo(ArrayList<Task> commands, String userInput) throws BuddyException {
         String description = userInput.length() > 5 ? userInput.substring(5).trim() : "";
         if (description.isEmpty()) {
@@ -138,6 +155,8 @@ public class Buddy {
                     handleDeadline(commands, userInput);
                 } else if (userInput.startsWith("event ")) {
                     handleEvent(commands, userInput);
+                } else if (userInput.startsWith("delete ")) {
+                    handleDelete(commands, userInput);
                 } else {
                     throw new BuddyException("I don't recognize that command.");
                 }
