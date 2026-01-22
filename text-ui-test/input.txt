@@ -6,5 +6,15 @@ mark 1
 unmark 3
 mark 2
 list
+todo something
 unmark 1
+deadline complete something /by tmr
+delete 2
 list
+delete 4
+delete 100
+mark 100
+testing
+event event /from today /to tmr
+list
+bye
