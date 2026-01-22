@@ -2,6 +2,30 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Buddy {
+
+    // Enum for command types
+    private enum Command {
+        LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, BYE, UNKNOWN;
+
+        // Method to parse user input into Command enum
+        static Command fromUserInput(String input) {
+            String trimmed = input.trim();
+            int space = trimmed.indexOf(' ');
+            String keyword = (space == -1) ? trimmed : trimmed.substring(0, space);
+            switch (keyword) {
+                case "list": return LIST;
+                case "mark": return MARK;
+                case "unmark": return UNMARK;
+                case "todo": return TODO;
+                case "deadline": return DEADLINE;
+                case "event": return EVENT;
+                case "delete": return DELETE;
+                case "bye": return BYE;
+                default: return UNKNOWN;
+            }
+        }
+    }
+
     private static void printBox(String... lines) {
         System.out.println("\t____________________________________________________________");
         for (String line : lines) {
@@ -94,9 +118,6 @@ public class Buddy {
         }
         String description = content.substring(0, byIndex).trim();
         String by = content.substring(byIndex + 5).trim();
-        if (description.isEmpty() || by.isEmpty()) {
-            throw new BuddyException("Deadline needs both description and /by time.");
-        }
         Task task = new Deadline(description, by);
         commands.add(task);
         printBox(
@@ -141,24 +162,34 @@ public class Buddy {
         printBox("Hello I'm Buddy!", "What can I do for you?");
         String userInput = scanner.nextLine();
 
-        while (!userInput.equals("bye")) {
+        while (true) {
+            Command cmd = Command.fromUserInput(userInput);
+            if (cmd == Command.BYE) break;
             try {
-                if (userInput.equals("list")) {
-                    handleList(commands);
-                } else if (userInput.startsWith("mark ")) {
-                    handleMark(commands, userInput);
-                } else if (userInput.startsWith("unmark ")) {
-                    handleUnmark(commands, userInput);
-                } else if (userInput.startsWith("todo ")) {
-                    handleTodo(commands, userInput);
-                } else if (userInput.startsWith("deadline ")) {
-                    handleDeadline(commands, userInput);
-                } else if (userInput.startsWith("event ")) {
-                    handleEvent(commands, userInput);
-                } else if (userInput.startsWith("delete ")) {
-                    handleDelete(commands, userInput);
-                } else {
-                    throw new BuddyException("I don't recognize that command.");
+                switch (cmd) {
+                    case LIST:
+                        handleList(commands);
+                        break;
+                    case MARK:
+                        handleMark(commands, userInput);
+                        break;
+                    case UNMARK:
+                        handleUnmark(commands, userInput);
+                        break;
+                    case DELETE:
+                        handleDelete(commands, userInput);
+                        break;
+                    case TODO:
+                        handleTodo(commands, userInput);
+                        break;
+                    case DEADLINE:
+                        handleDeadline(commands, userInput);
+                        break;
+                    case EVENT:
+                        handleEvent(commands, userInput);
+                        break;
+                    default:
+                        throw new BuddyException("I don't recognize that command.");
                 }
             } catch (BuddyException e) {
                 printBox("Oh No! " + e.getMessage());
