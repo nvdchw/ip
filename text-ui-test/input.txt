@@ -1,0 +1,10 @@
+todo go for a haircut
+deadline complete assignment /by June 6th
+event lunar new year /from 17 Feb 2026 /to 18 Feb 2026
+list
+mark 1
+unmark 3
+mark 2
+list
+unmark 1
+list
