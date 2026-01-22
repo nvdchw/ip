@@ -2,42 +2,54 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Buddy {
-    private static void handleList(ArrayList<Task> commands) {
+    private static void printBox(String... lines) {
         System.out.println("\t____________________________________________________________");
-        System.out.println("\tHere are the tasks in your list:");
-        for (int i = 0; i < commands.size(); i++) {
-            System.out.println("\t" + (i + 1) + "." + commands.get(i));
+        for (String line : lines) {
+            System.out.println("\t" + line);
         }
         System.out.println("\t____________________________________________________________");
+    }
+
+    private static void handleList(ArrayList<Task> commands) {
+        if (commands.isEmpty()) {
+            printBox("No tasks yet. Add one to get started!");
+            return;
+        }
+        String[] lines = new String[commands.size() + 1];
+        lines[0] = "Here are the tasks in your list:";
+        for (int i = 0; i < commands.size(); i++) {
+            lines[i + 1] = (i + 1) + "." + commands.get(i);
+        }
+        printBox(lines);
     }
 
     private static void handleMark(ArrayList<Task> commands, String userInput) {
         int taskIndex = Integer.parseInt(userInput.substring(5)) - 1;
         commands.get(taskIndex).markAsDone();
-        System.out.println("\t____________________________________________________________");
-        System.out.println("\tNice! I've marked this task as done:");
-        System.out.println("\t  " + commands.get(taskIndex));
-        System.out.println("\t____________________________________________________________");
+        printBox(
+            "Nice! I've marked this task as done:",
+            "  " + commands.get(taskIndex)
+        );
     }
 
     private static void handleUnmark(ArrayList<Task> commands, String userInput) {
         int taskIndex = Integer.parseInt(userInput.substring(7)) - 1;
         commands.get(taskIndex).markAsUndone();
-        System.out.println("\t____________________________________________________________");
-        System.out.println("\tOK, I've marked this task as not done yet:");
-        System.out.println("\t  " + commands.get(taskIndex));
-        System.out.println("\t____________________________________________________________");
+        printBox(
+            "OK, I've marked this task as not done yet:",
+            "  " + commands.get(taskIndex)
+        );
     }
 
     private static void handleTodo(ArrayList<Task> commands, String userInput) {
         String description = userInput.substring(5);
         Task task = new Todo(description);
         commands.add(task);
-        System.out.println("\t____________________________________________________________");
-        System.out.println("\tGot it. I've added this task:");
-        System.out.println("\t  " + task);
-        System.out.println("\tNow you have " + commands.size() + " tasks in the list.");
-        System.out.println("\t____________________________________________________________");
+        printBox(
+            "Got it. I've added this task:",
+            "  " + task,
+            "Now you have " + commands.size() + " tasks in the list."
+        );
     }
 
     private static void handleDeadline(ArrayList<Task> commands, String userInput) {
@@ -47,11 +59,11 @@ public class Buddy {
         String by = content.substring(byIndex + 5);
         Task task = new Deadline(description, by);
         commands.add(task);
-        System.out.println("\t____________________________________________________________");
-        System.out.println("\tGot it. I've added this task:");
-        System.out.println("\t  " + task);
-        System.out.println("\tNow you have " + commands.size() + " tasks in the list.");
-        System.out.println("\t____________________________________________________________");
+        printBox(
+            "Got it. I've added this task:",
+            "  " + task,
+            "Now you have " + commands.size() + " tasks in the list."
+        );
     }
 
     private static void handleEvent(ArrayList<Task> commands, String userInput) {
@@ -63,11 +75,11 @@ public class Buddy {
         String to = content.substring(toIndex + 5);
         Task task = new Event(description, from, to);
         commands.add(task);
-        System.out.println("\t____________________________________________________________");
-        System.out.println("\tGot it. I've added this task:");
-        System.out.println("\t  " + task);
-        System.out.println("\tNow you have " + commands.size() + " tasks in the list.");
-        System.out.println("\t____________________________________________________________");
+        printBox(
+            "Got it. I've added this task:",
+            "  " + task,
+            "Now you have " + commands.size() + " tasks in the list."
+        );
     }
 
     public static void main(String[] args) {
@@ -80,10 +92,7 @@ public class Buddy {
                 "   | |_) | |__| | |__| | |__| | | |   \n" +
                 "   |____/ \\____/|_____/|_____/  |_|   \n";
         System.out.println(logo);
-        System.out.println("\t____________________________________________________________");
-        System.out.println("\tHello I'm Buddy!");
-        System.out.println("\tWhat can I do for you?");
-        System.out.println("\t____________________________________________________________");
+        printBox("Hello I'm Buddy!", "What can I do for you?");
         String userInput = scanner.nextLine();
 
         while (!userInput.equals("bye")) {
@@ -99,12 +108,12 @@ public class Buddy {
                 handleDeadline(commands, userInput);
             } else if (userInput.startsWith("event ")) {
                 handleEvent(commands, userInput);
+            } else {
+                printBox("I don't recognize that command.");
             }
             userInput = scanner.nextLine();
         }
         scanner.close();
-        System.out.println("    ____________________________________________________________");
-        System.out.println("    Bye. Hope to see you again soon!");
-        System.out.println("    ____________________________________________________________");
+        printBox("Bye. Hope to see you again soon!");
     }
 }
