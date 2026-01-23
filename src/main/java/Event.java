@@ -1,7 +1,11 @@
+/**
+ * Represents an event task with a description, start time, and end time.
+ */
 public class Event extends Task {
     protected String from;
     protected String to;
 
+    // Constructor to initialise event task with description, start time, and end time
     public Event(String description, String from, String to) {
         super(description);
         this.from = from;
