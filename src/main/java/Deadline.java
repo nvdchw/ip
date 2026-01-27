@@ -1,8 +1,14 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  * Represents a deadline task with a description and a due date.
  */
 public class Deadline extends Task {
-    protected String by;
+    protected LocalDateTime by;
+    private static final DateTimeFormatter FILE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+    private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mm a");
+
 
     /**
      * Constructs a Deadline task with the given description and due date.
@@ -12,16 +18,30 @@ public class Deadline extends Task {
      */
     public Deadline(String description, String by) {
         super(description);
-        this.by = by;
+        this.by = parseDateTime(by);
+    }
+
+    /**
+     * Parses a date/time string into a LocalDateTime object.
+     * 
+     * @param dateTimeStr the date/time string to parse
+     * @return the parsed LocalDateTime object
+     */
+    private static LocalDateTime parseDateTime(String dateTimeStr) {
+        try {
+            return LocalDateTime.parse(dateTimeStr, FILE_FORMAT);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid date/time format. Use yyyy-MM-dd HHmm (e.g., 2019-12-02 1800)");
+        }
     }
 
     @Override
     public String toFileFormat() {
-        return "D | " + super.toFileFormat() + " | " + by;
+        return "D | " + super.toFileFormat() + " | " + by.format(FILE_FORMAT);
     }
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by + ")";
+        return "[D]" + super.toString() + " (by: " + by.format(DISPLAY_FORMAT) + ")";
     }
 }

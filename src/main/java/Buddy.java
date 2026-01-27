@@ -310,15 +310,19 @@ public class Buddy {
         String description = content.substring(0, byIndex).trim();
         String by = content.substring(byIndex + 5).trim();
 
-        // Create and add the deadline task
-        Task task = new Deadline(description, by);
-        tasks.add(task);
-        saveTasks(tasks); // Save to file after adding deadline task
-        printBox(
-            "Got it. I've added this task:",
-            "  " + task,
-            "Now you have " + tasks.size() + " tasks in the list."
-        );
+        try {
+            // Create and add the deadline task
+            Task task = new Deadline(description, by);
+            tasks.add(task);
+            saveTasks(tasks);
+            printBox(
+                "Got it. I've added this task:",
+                "  " + task,
+                "Now you have " + tasks.size() + " tasks in the list."
+            );
+        } catch (IllegalArgumentException e) {
+            throw new BuddyException(e.getMessage());
+        }
     }
 
     /**
@@ -347,15 +351,19 @@ public class Buddy {
             throw new BuddyException("Event needs description, start, and end time.");
         }
 
-        // Create and add the event task
-        Task task = new Event(description, from, to);
-        tasks.add(task);
-        saveTasks(tasks); // Save to file after adding event task
-        printBox(
-            "Got it. I've added this task:",
-            "  " + task,
-            "Now you have " + tasks.size() + " tasks in the list."
-        );
+        try {
+            // Create and add the event task
+            Task task = new Event(description, from, to);
+            tasks.add(task);
+            saveTasks(tasks);
+            printBox(
+                "Got it. I've added this task:",
+                "  " + task,
+                "Now you have " + tasks.size() + " tasks in the list."
+            );
+        } catch (IllegalArgumentException e) {
+            throw new BuddyException(e.getMessage());
+        }
     }
 
     
