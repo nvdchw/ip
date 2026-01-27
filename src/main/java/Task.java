@@ -5,28 +5,45 @@ public class Task {
     private final String description;
     private boolean isDone;
 
-    // Constructor to initialise undone task with description
+    /**
+     * Constructs a Task with the given description.
+     * The task is initially marked as not done.
+     *
+     * @param description the description of the task
+     */
     public Task(String description) {
         this.description = description;
         this.isDone = false;
     }
 
-    // Marks the task as done
+    /**
+     * Marks this task as done.
+     */
     public void markAsDone() {
         this.isDone = true;
     }
 
-    // Marks the task as not done
+    /**
+     * Marks this task as not done.
+     */
     public void markAsUndone() {
         this.isDone = false;
     }
 
-    // Returns completionstatus icon
+    /**
+     * Returns the completion status icon for this task.
+     *
+     * @return "X" if the task is done, " " (space) if not done
+     */
     public String getStatusIcon() {
         return (isDone ? "X" : " ");
     }
 
-    // Returns string representation of the task
+    /**
+     * Returns a string representation of this task.
+     *
+     * @return a formatted string containing the status icon and task description
+     */
     @Override
     public String toString() {
         return "[" + getStatusIcon() + "] " + description;

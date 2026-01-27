@@ -4,7 +4,12 @@
 public class Deadline extends Task {
     protected String by;
 
-    // Constructor to initialise deadline task with description and due date
+    /**
+     * Constructs a Deadline task with the given description and due date.
+     *
+     * @param description the description of the deadline task
+     * @param by the due date of the deadline task
+     */
     public Deadline(String description, String by) {
         super(description);
         this.by = by;

@@ -7,7 +7,9 @@ import java.util.ArrayList;
  */
 public class Buddy {
 
-    // Enum for command types
+    /**
+     * Enum for command types.
+     */
     private enum Command {
         LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, BYE, UNKNOWN;
 
@@ -17,20 +19,24 @@ public class Buddy {
             int space = trimmed.indexOf(' ');
             String keyword = (space == -1) ? trimmed : trimmed.substring(0, space);
             return switch (keyword) {
-                case "list" -> LIST;
-                case "mark" -> MARK;
-                case "unmark" -> UNMARK;
-                case "todo" -> TODO;
-                case "deadline" -> DEADLINE;
-                case "event" -> EVENT;
-                case "delete" -> DELETE;
-                case "bye" -> BYE;
-                default -> UNKNOWN;
+            case "list" -> LIST;
+            case "mark" -> MARK;
+            case "unmark" -> UNMARK;
+            case "todo" -> TODO;
+            case "deadline" -> DEADLINE;
+            case "event" -> EVENT;
+            case "delete" -> DELETE;
+            case "bye" -> BYE;
+            default -> UNKNOWN;
             };
         }
     }
 
-    // Method to print messages in a formatted box
+    /**
+     * Prints messages in a boxed format.
+     *
+     * @param lines the lines of text to print inside the box
+     */
     private static void printBox(String... lines) {
         System.out.println("\t____________________________________________________________");
         for (String line : lines) {
@@ -39,7 +45,11 @@ public class Buddy {
         System.out.println("\t____________________________________________________________");
     }
 
-    // Handler for the 'list' command
+    /**
+     * Handler for the 'list' command.
+     *
+     * @param tasks the list of tasks
+     */
     private static void handleList(ArrayList<Task> tasks) {
         // If no tasks, inform the user
         if (tasks.isEmpty()) {
@@ -56,7 +66,13 @@ public class Buddy {
         printBox(lines);
     }
 
-    // Handler for the 'mark' command
+    /**
+     * Handler for the 'mark' command.
+     *
+     * @param tasks the list of tasks
+     * @param userInput the full user input string
+     * @throws BuddyException if the task number is invalid
+     */
     private static void handleMark(ArrayList<Task> tasks, String userInput) throws BuddyException {
         try {
             int taskIndex = Integer.parseInt(userInput.substring(5).trim()) - 1;
@@ -78,7 +94,13 @@ public class Buddy {
         }
     }
 
-    // Handler for the 'unmark' command
+    /**
+     * Handler for the 'unmark' command.
+     *
+     * @param tasks the list of tasks
+     * @param userInput the full user input string
+     * @throws BuddyException if the task number is invalid
+     */
     private static void handleUnmark(ArrayList<Task> tasks, String userInput) throws BuddyException {
         try {
             int taskIndex = Integer.parseInt(userInput.substring(7).trim()) - 1;
@@ -100,7 +122,13 @@ public class Buddy {
         }
     }
 
-    // Handler for the 'delete' command
+    /**
+     * Handler for the 'delete' command.
+     *
+     * @param tasks the list of tasks
+     * @param userInput the full user input string
+     * @throws BuddyException if the task number is invalid
+     */
     private static void handleDelete(ArrayList<Task> tasks, String userInput) throws BuddyException {
         try {
             int taskIndex = Integer.parseInt(userInput.substring(7).trim()) - 1;
@@ -123,7 +151,13 @@ public class Buddy {
         }
     }
 
-    // Handler for the 'todo' command
+    /**
+     * Handler for the 'todo' command.
+     *
+     * @param tasks the list of tasks
+     * @param userInput the full user input string
+     * @throws BuddyException if the description is empty
+     */
     private static void handleTodo(ArrayList<Task> tasks, String userInput) throws BuddyException {
         String description = userInput.length() > 5 ? userInput.substring(5).trim() : "";
         
@@ -142,7 +176,13 @@ public class Buddy {
         );
     }
 
-    // Handler for the 'deadline' command
+    /**
+     * Handler for the 'deadline' command.
+     *
+     * @param tasks the list of tasks
+     * @param userInput the full user input string
+     * @throws BuddyException if the description or time is invalid
+     */
     private static void handleDeadline(ArrayList<Task> tasks, String userInput) throws BuddyException {
         String content = userInput.length() > 9 ? userInput.substring(9).trim() : "";
         int byIndex = content.indexOf(" /by ");
@@ -154,7 +194,7 @@ public class Buddy {
 
         String description = content.substring(0, byIndex).trim();
         String by = content.substring(byIndex + 5).trim();
-        
+
         // Create and add the deadline task
         Task task = new Deadline(description, by);
         tasks.add(task);
@@ -165,7 +205,13 @@ public class Buddy {
         );
     }
 
-    // Handler for the 'event' command
+    /**
+     * Handler for the 'event' command.
+     *
+     * @param tasks the list of tasks
+     * @param userInput the full user input string
+     * @throws BuddyException if the description, start time, or end time is invalid
+     */
     private static void handleEvent(ArrayList<Task> tasks, String userInput) throws BuddyException {
         String content = userInput.length() > 6 ? userInput.substring(6).trim() : "";
         int fromIndex = content.indexOf(" /from ");
@@ -195,6 +241,12 @@ public class Buddy {
         );
     }
 
+    
+    /**
+     * Main method to run the Buddy application.
+     *
+     * @param args command-line arguments (not used)
+     */
     public static void main(String[] args) {
         // Scanner for user input
         Scanner scanner = new Scanner(System.in);
@@ -224,18 +276,18 @@ public class Buddy {
             if (cmd == Command.BYE) {
                 break;
             }
-
+            
             // Handle tasks with exception handling
             try {
                 switch (cmd) {
-                    case LIST -> handleList(tasks);
-                    case MARK -> handleMark(tasks, userInput);
-                    case UNMARK -> handleUnmark(tasks, userInput);
-                    case DELETE -> handleDelete(tasks, userInput);
-                    case TODO -> handleTodo(tasks, userInput);
-                    case DEADLINE -> handleDeadline(tasks, userInput);
-                    case EVENT -> handleEvent(tasks, userInput);
-                    default -> throw new BuddyException("I don't recognize that command.");
+                case LIST -> handleList(tasks);
+                case MARK -> handleMark(tasks, userInput);
+                case UNMARK -> handleUnmark(tasks, userInput);
+                case DELETE -> handleDelete(tasks, userInput);
+                case TODO -> handleTodo(tasks, userInput);
+                case DEADLINE -> handleDeadline(tasks, userInput);
+                case EVENT -> handleEvent(tasks, userInput);
+                default -> throw new BuddyException("I don't recognize that command.");
                 }
             } catch (BuddyException e) {
                 printBox("Oh No! " + e.getMessage());
