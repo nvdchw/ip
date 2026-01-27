@@ -40,6 +40,15 @@ public class Task {
     }
 
     /**
+     * Returns a file format representation of the task.
+     *
+     * @return the file format string
+     */
+    public String toFileFormat() {
+        return (isDone ? "1" : "0") + " | " + description;
+    }
+
+    /**
      * Returns a string representation of this task.
      *
      * @return a formatted string containing the status icon and task description

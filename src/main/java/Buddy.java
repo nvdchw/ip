@@ -1,11 +1,21 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Buddy is a simple command-line task management application.
  * It allows users to add, mark, unmark, delete, and list tasks.
  */
 public class Buddy {
+
+    // Constants for data storage
+    private static final String DATA_DIR = "./data";
+    private static final String DATA_FILE = "./data/buddy.txt";
 
     /**
      * Enum for command types.
@@ -46,6 +56,107 @@ public class Buddy {
     }
 
     /**
+     * Saves all tasks to the data file.
+     *
+     * @param tasks the list of tasks to save
+     */
+    private static void saveTasks(ArrayList<Task> tasks) {
+        try {
+            // Create directory if it does not exist yet
+            File directory = new File(DATA_DIR);
+            if (!directory.exists()) {
+                if (!directory.mkdirs()) {
+                    System.out.println("Error: Failed to create data directory.");
+                    return;
+                }
+            }
+
+            // Write tasks to file
+            FileWriter writer = new FileWriter(DATA_FILE);
+            for (Task task : tasks) {
+                writer.write(task.toFileFormat() + System.lineSeparator());
+            }
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving tasks: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Loads tasks from the data file.
+     *
+     * @return the list of loaded tasks
+     */
+    private static ArrayList<Task> loadTasks() {
+        ArrayList<Task> tasks = new ArrayList<>();
+        Path filePath = Paths.get(DATA_FILE);
+
+        // Check if file exists
+        if (!Files.exists(filePath)) {
+            return tasks; // Return empty list if file doesn't exist
+        }
+
+        try {
+            // Read all lines from file
+            for (String line : Files.readAllLines(filePath)) {
+                try {
+                    Task task = parseTaskFromFile(line);
+                    tasks.add(task);
+                } catch (Exception e) {
+                    // Skip corrupted lines
+                    System.out.println("Warning: Skipping corrupted line: " + line);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading tasks: " + e.getMessage());
+        }
+
+        return tasks;
+    }
+
+    /**
+     * Parses a task from a file format string.
+     *
+     * @param line the line from the file
+     * @return the parsed task
+     * @throws BuddyException if the line format is invalid
+     */
+    private static Task parseTaskFromFile(String line) throws BuddyException {
+        // Check for valid format
+        String[] parts = line.split(" \\| ");
+        if (parts.length < 3) {
+            throw new BuddyException("Invalid file format");
+        }
+
+        // Extract common fields
+        String type = parts[0];
+        boolean isDone = parts[1].equals("1");
+        String description = parts[2];
+
+        // Create task based on type
+        Task task = switch (type) {
+        case "T" -> new Todo(description);
+        case "D" -> {
+            if (parts.length < 4) throw new BuddyException("Invalid deadline format");
+            yield new Deadline(description, parts[3]);
+        }
+        case "E" -> {
+            if (parts.length < 5) throw new BuddyException("Invalid event format");
+            yield new Event(description, parts[3], parts[4]);
+        }
+        default -> throw new BuddyException("Unknown task type: " + type);
+        };
+
+        // Set completion status
+        if (isDone) {
+            task.markAsDone();
+        }
+
+        return task;
+    }
+
+
+    /**
      * Handler for the 'list' command.
      *
      * @param tasks the list of tasks
@@ -84,6 +195,7 @@ public class Buddy {
 
             // Mark the task as done
             tasks.get(taskIndex).markAsDone();
+            saveTasks(tasks); // Save to file after marking
             printBox(
                 "Nice! I've marked this task as done:",
                 "  " + tasks.get(taskIndex)
@@ -112,6 +224,7 @@ public class Buddy {
 
             // Mark the task as not done
             tasks.get(taskIndex).markAsUndone();
+            saveTasks(tasks); // Save to file after unmarking
             printBox(
                 "OK, I've marked this task as not done yet:",
                 "  " + tasks.get(taskIndex)
@@ -140,6 +253,7 @@ public class Buddy {
 
             // Remove the task and inform the user
             Task deletedTask = tasks.remove(taskIndex);
+            saveTasks(tasks); // Save to file after deletion
             printBox(
                 "Noted. I've removed this task:",
                 "  " + deletedTask,
@@ -169,12 +283,13 @@ public class Buddy {
         // Create and add the todo task
         Task task = new Todo(description);
         tasks.add(task);
+        saveTasks(tasks); // Save to file after adding todo task
         printBox(
             "Got it. I've added this task:",
             "  " + task,
             "Now you have " + tasks.size() + " tasks in the list."
         );
-    }
+    }    
 
     /**
      * Handler for the 'deadline' command.
@@ -198,6 +313,7 @@ public class Buddy {
         // Create and add the deadline task
         Task task = new Deadline(description, by);
         tasks.add(task);
+        saveTasks(tasks); // Save to file after adding deadline task
         printBox(
             "Got it. I've added this task:",
             "  " + task,
@@ -234,6 +350,7 @@ public class Buddy {
         // Create and add the event task
         Task task = new Event(description, from, to);
         tasks.add(task);
+        saveTasks(tasks); // Save to file after adding event task
         printBox(
             "Got it. I've added this task:",
             "  " + task,
@@ -252,7 +369,7 @@ public class Buddy {
         Scanner scanner = new Scanner(System.in);
 
         // List to store tasks
-        ArrayList<Task> tasks = new ArrayList<>();
+        ArrayList<Task> tasks = loadTasks();
 
         // Print welcome message
         String logo = "\t____  _    _ _____  _______     __\n" +
