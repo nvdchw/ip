@@ -4,34 +4,27 @@
 public class Parser {
     
     /**
-     * Enum for command types.
-     */
-    public enum CommandType {
-        LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, FIND, BYE, UNKNOWN
-    }
-    
-    /**
      * Parses user input to determine the command type.
      *
      * @param input the user input string
      * @return the command type
      */
-    public static CommandType parseCommand(String input) {
+    public static Command parseCommand(String input) throws BuddyException {
         String trimmed = input.trim();
         int space = trimmed.indexOf(' ');
         String keyword = (space == -1) ? trimmed : trimmed.substring(0, space);
         
         return switch (keyword.toLowerCase()) {
-        case "list" -> CommandType.LIST;
-        case "mark" -> CommandType.MARK;
-        case "unmark" -> CommandType.UNMARK;
-        case "todo" -> CommandType.TODO;
-        case "deadline" -> CommandType.DEADLINE;
-        case "event" -> CommandType.EVENT;
-        case "delete" -> CommandType.DELETE;
-        case "find" -> CommandType.FIND;
-        case "bye" -> CommandType.BYE;
-        default -> CommandType.UNKNOWN;
+        case "list" -> new ListCommand();
+        case "mark" -> new MarkCommand(input);
+        case "unmark" -> new UnmarkCommand(input);
+        case "delete" -> new DeleteCommand(input);
+        case "todo" -> new TodoCommand(input);
+        case "deadline" -> new DeadlineCommand(input);
+        case "event" -> new EventCommand(input);
+        case "find" -> new FindCommand(input);
+        case "bye" -> new ByeCommand();
+        default -> throw new BuddyException("I don't recognize that command.");
         };
     }
     
