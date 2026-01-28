@@ -17,32 +17,6 @@ public class Buddy {
     }
 
     /**
-     * Enum for command types.
-     */
-    private enum Command {
-        LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, FIND, BYE, UNKNOWN;
-
-        // Method to parse user input into Command enum
-        static Command fromUserInput(String input) {
-            String trimmed = input.trim();
-            int space = trimmed.indexOf(' ');
-            String keyword = (space == -1) ? trimmed : trimmed.substring(0, space);
-            return switch (keyword) {
-            case "list" -> LIST;
-            case "mark" -> MARK;
-            case "unmark" -> UNMARK;
-            case "todo" -> TODO;
-            case "deadline" -> DEADLINE;
-            case "event" -> EVENT;
-            case "delete" -> DELETE;
-            case "find" -> FIND;
-            case "bye" -> BYE;
-            default -> UNKNOWN;
-            };
-        }
-    }
-
-    /**
      * Saves all tasks to the data file.
      *
      * @param tasks the list of tasks to save
@@ -115,7 +89,7 @@ public class Buddy {
      */
     private void handleMark(ArrayList<Task> tasks, String userInput) throws BuddyException {
         try {
-            int taskIndex = Integer.parseInt(userInput.substring(5).trim()) - 1;
+            int taskIndex = Parser.parseTaskNumber(userInput, 4);
             
             // Check for valid task index
             if (taskIndex < 0 || taskIndex >= tasks.size()) {
@@ -144,7 +118,7 @@ public class Buddy {
      */
     private void handleUnmark(ArrayList<Task> tasks, String userInput) throws BuddyException {
         try {
-            int taskIndex = Integer.parseInt(userInput.substring(7).trim()) - 1;
+            int taskIndex = Parser.parseTaskNumber(userInput, 7);
             
             // Check for valid task index
             if (taskIndex < 0 || taskIndex >= tasks.size()) {
@@ -173,7 +147,7 @@ public class Buddy {
      */
     private void handleDelete(ArrayList<Task> tasks, String userInput) throws BuddyException {
         try {
-            int taskIndex = Integer.parseInt(userInput.substring(7).trim()) - 1;
+            int taskIndex = Parser.parseTaskNumber(userInput, 7);
             
             // Check for valid task index
             if (taskIndex < 0 || taskIndex >= tasks.size()) {
@@ -202,14 +176,10 @@ public class Buddy {
      * @throws BuddyException if the date format is invalid
      */
     private void handleFind(ArrayList<Task> tasks, String userInput) throws BuddyException {
-        String dateStr = userInput.length() > 5 ? userInput.substring(5).trim() : "";
-        
-        if (dateStr.isEmpty()) {
-            throw new BuddyException("Find format: find <date> (yyyy-MM-dd)");
-        }
+        String dateString = Parser.parseFindDate(userInput);
 
         try {
-            java.time.LocalDate searchDate = java.time.LocalDate.parse(dateStr, 
+            java.time.LocalDate searchDate = java.time.LocalDate.parse(dateString, 
                 java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             
             java.util.ArrayList<Task> matchingTasks = new java.util.ArrayList<>();
@@ -251,12 +221,7 @@ public class Buddy {
      * @throws BuddyException if the description is empty
      */
     private void handleTodo(ArrayList<Task> tasks, String userInput) throws BuddyException {
-        String description = userInput.length() > 5 ? userInput.substring(5).trim() : "";
-        
-        // Check for empty description
-        if (description.isEmpty()) {
-            throw new BuddyException("A todo needs a description.");
-        }
+        String description = Parser.parseTodoDescription(userInput);
 
         // Create and add the todo task
         Task task = new Todo(description);
@@ -277,16 +242,9 @@ public class Buddy {
      * @throws BuddyException if the description or time is invalid
      */
     private void handleDeadline(ArrayList<Task> tasks, String userInput) throws BuddyException {
-        String content = userInput.length() > 9 ? userInput.substring(9).trim() : "";
-        int byIndex = content.indexOf(" /by ");
-        
-        // Check for valid format
-        if (content.isEmpty() || byIndex == -1) {
-            throw new BuddyException("Deadline format: deadline <desc> /by <time>");
-        }
-
-        String description = content.substring(0, byIndex).trim();
-        String by = content.substring(byIndex + 5).trim();
+        String[] parts = Parser.parseDeadline(userInput);
+        String description = parts[0];
+        String by = parts[1];
 
         try {
             // Create and add the deadline task
@@ -311,23 +269,10 @@ public class Buddy {
      * @throws BuddyException if the description, start time, or end time is invalid
      */
     private void handleEvent(ArrayList<Task> tasks, String userInput) throws BuddyException {
-        String content = userInput.length() > 6 ? userInput.substring(6).trim() : "";
-        int fromIndex = content.indexOf(" /from ");
-        int toIndex = content.indexOf(" /to ");
-
-        // Check for valid format
-        if (content.isEmpty() || fromIndex == -1 || toIndex == -1 || toIndex < fromIndex) {
-            throw new BuddyException("Event format: event <desc> /from <start> /to <end>");
-        }
-
-        String description = content.substring(0, fromIndex).trim();
-        String from = content.substring(fromIndex + 7, toIndex).trim();
-        String to = content.substring(toIndex + 5).trim();
-
-        // Check for empty fields
-        if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
-            throw new BuddyException("Event needs description, start, and end time.");
-        }
+        String[] parts = Parser.parseEvent(userInput);
+        String description = parts[0];
+        String from = parts[1];
+        String to = parts[2];
 
         try {
             // Create and add the event task
@@ -357,10 +302,10 @@ public class Buddy {
         // Main command processing loop
         while (true) {
             // Parse the command to obtain the command enum
-            Command cmd = Command.fromUserInput(userInput);
+            Parser.CommandType cmd = Parser.parseCommand(userInput);
 
             // Exit if command is BYE
-            if (cmd == Command.BYE) {
+            if (cmd == Parser.CommandType.BYE) {
                 break;
             }
             
