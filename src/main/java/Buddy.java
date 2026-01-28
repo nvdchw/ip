@@ -1,10 +1,4 @@
 import java.util.ArrayList;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * Buddy is a simple command-line task management application.
@@ -12,14 +6,14 @@ import java.nio.file.Paths;
  */
 public class Buddy {
 
-    // Constants for data storage
-    private static final String DATA_DIR = "./data";
     private static final String DATA_FILE = "./data/buddy.txt";
 
     private final Ui ui;
+    private final Storage storage;
 
     public Buddy() {
         this.ui = new Ui();
+        this.storage = new Storage(DATA_FILE);
     }
 
     /**
@@ -53,25 +47,15 @@ public class Buddy {
      *
      * @param tasks the list of tasks to save
      */
-    private static void saveTasks(ArrayList<Task> tasks) {
+    private void saveTasks(ArrayList<Task> tasks) {
         try {
-            // Create directory if it does not exist yet
-            File directory = new File(DATA_DIR);
-            if (!directory.exists()) {
-                if (!directory.mkdirs()) {
-                    System.out.println("Error: Failed to create data directory.");
-                    return;
-                }
-            }
-
-            // Write tasks to file
-            FileWriter writer = new FileWriter(DATA_FILE);
+            ArrayList<String> taskStrings = new ArrayList<>();
             for (Task task : tasks) {
-                writer.write(task.toFileFormat() + System.lineSeparator());
+                taskStrings.add(task.toFileFormat());
             }
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("Error saving tasks: " + e.getMessage());
+            storage.save(taskStrings);
+        } catch (BuddyException e) {
+            ui.showError("Error saving tasks: " + e.getMessage());
         }
     }
 
@@ -80,28 +64,22 @@ public class Buddy {
      *
      * @return the list of loaded tasks
      */
-    private static ArrayList<Task> loadTasks() {
+    private ArrayList<Task> loadTasks() {
         ArrayList<Task> tasks = new ArrayList<>();
-        Path filePath = Paths.get(DATA_FILE);
-
-        // Check if file exists
-        if (!Files.exists(filePath)) {
-            return tasks; // Return empty list if file doesn't exist
-        }
-
+        
         try {
-            // Read all lines from file
-            for (String line : Files.readAllLines(filePath)) {
+            ArrayList<String> lines = new ArrayList<>(storage.load());
+            for (String line : lines) {
                 try {
                     Task task = parseTaskFromFile(line);
                     tasks.add(task);
-                } catch (Exception e) {
+                } catch (BuddyException e) {
                     // Skip corrupted lines
                     System.out.println("Warning: Skipping corrupted line: " + line);
                 }
             }
-        } catch (IOException e) {
-            System.out.println("Error loading tasks: " + e.getMessage());
+        } catch (BuddyException e) {
+            ui.showError("Error loading tasks: " + e.getMessage());
         }
 
         return tasks;
