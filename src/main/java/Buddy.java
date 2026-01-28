@@ -71,7 +71,7 @@ public class Buddy {
             ArrayList<String> lines = new ArrayList<>(storage.load());
             for (String line : lines) {
                 try {
-                    Task task = parseTaskFromFile(line);
+                    Task task = TaskParser.parseFromFile(line);
                     tasks.add(task);
                 } catch (BuddyException e) {
                     // Skip corrupted lines
@@ -84,48 +84,6 @@ public class Buddy {
 
         return tasks;
     }
-
-    /**
-     * Parses a task from a file format string.
-     *
-     * @param line the line from the file
-     * @return the parsed task
-     * @throws BuddyException if the line format is invalid
-     */
-    private static Task parseTaskFromFile(String line) throws BuddyException {
-        // Check for valid format
-        String[] parts = line.split(" \\| ");
-        if (parts.length < 3) {
-            throw new BuddyException("Invalid file format");
-        }
-
-        // Extract common fields
-        String type = parts[0];
-        boolean isDone = parts[1].equals("1");
-        String description = parts[2];
-
-        // Create task based on type
-        Task task = switch (type) {
-        case "T" -> new Todo(description);
-        case "D" -> {
-            if (parts.length < 4) throw new BuddyException("Invalid deadline format");
-            yield new Deadline(description, parts[3]);
-        }
-        case "E" -> {
-            if (parts.length < 5) throw new BuddyException("Invalid event format");
-            yield new Event(description, parts[3], parts[4]);
-        }
-        default -> throw new BuddyException("Unknown task type: " + type);
-        };
-
-        // Set completion status
-        if (isDone) {
-            task.markAsDone();
-        }
-
-        return task;
-    }
-
 
     /**
      * Handler for the 'list' command.
