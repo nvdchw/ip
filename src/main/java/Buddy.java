@@ -1,4 +1,3 @@
-import java.util.Scanner;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.FileWriter;
@@ -16,6 +15,12 @@ public class Buddy {
     // Constants for data storage
     private static final String DATA_DIR = "./data";
     private static final String DATA_FILE = "./data/buddy.txt";
+
+    private final Ui ui;
+
+    public Buddy() {
+        this.ui = new Ui();
+    }
 
     /**
      * Enum for command types.
@@ -41,19 +46,6 @@ public class Buddy {
             default -> UNKNOWN;
             };
         }
-    }
-
-    /**
-     * Prints messages in a boxed format.
-     *
-     * @param lines the lines of text to print inside the box
-     */
-    private static void printBox(String... lines) {
-        System.out.println("\t____________________________________________________________");
-        for (String line : lines) {
-            System.out.println("\t" + line);
-        }
-        System.out.println("\t____________________________________________________________");
     }
 
     /**
@@ -162,10 +154,10 @@ public class Buddy {
      *
      * @param tasks the list of tasks
      */
-    private static void handleList(ArrayList<Task> tasks) {
+    private void handleList(ArrayList<Task> tasks) {
         // If no tasks, inform the user
         if (tasks.isEmpty()) {
-            printBox("No tasks yet. Add one to get started!");
+            ui.printBox("No tasks yet. Add one to get started!");
             return;
         }
 
@@ -175,7 +167,7 @@ public class Buddy {
         for (int i = 0; i < tasks.size(); i++) {
             lines[i + 1] = (i + 1) + "." + tasks.get(i);
         }
-        printBox(lines);
+        ui.printBox(lines);
     }
 
     /**
@@ -185,7 +177,7 @@ public class Buddy {
      * @param userInput the full user input string
      * @throws BuddyException if the task number is invalid
      */
-    private static void handleMark(ArrayList<Task> tasks, String userInput) throws BuddyException {
+    private void handleMark(ArrayList<Task> tasks, String userInput) throws BuddyException {
         try {
             int taskIndex = Integer.parseInt(userInput.substring(5).trim()) - 1;
             
@@ -197,7 +189,7 @@ public class Buddy {
             // Mark the task as done
             tasks.get(taskIndex).markAsDone();
             saveTasks(tasks); // Save to file after marking
-            printBox(
+            ui.printBox(
                 "Nice! I've marked this task as done:",
                 "  " + tasks.get(taskIndex)
             );
@@ -214,7 +206,7 @@ public class Buddy {
      * @param userInput the full user input string
      * @throws BuddyException if the task number is invalid
      */
-    private static void handleUnmark(ArrayList<Task> tasks, String userInput) throws BuddyException {
+    private void handleUnmark(ArrayList<Task> tasks, String userInput) throws BuddyException {
         try {
             int taskIndex = Integer.parseInt(userInput.substring(7).trim()) - 1;
             
@@ -226,7 +218,7 @@ public class Buddy {
             // Mark the task as not done
             tasks.get(taskIndex).markAsUndone();
             saveTasks(tasks); // Save to file after unmarking
-            printBox(
+            ui.printBox(
                 "OK, I've marked this task as not done yet:",
                 "  " + tasks.get(taskIndex)
             );
@@ -243,7 +235,7 @@ public class Buddy {
      * @param userInput the full user input string
      * @throws BuddyException if the task number is invalid
      */
-    private static void handleDelete(ArrayList<Task> tasks, String userInput) throws BuddyException {
+    private void handleDelete(ArrayList<Task> tasks, String userInput) throws BuddyException {
         try {
             int taskIndex = Integer.parseInt(userInput.substring(7).trim()) - 1;
             
@@ -255,7 +247,7 @@ public class Buddy {
             // Remove the task and inform the user
             Task deletedTask = tasks.remove(taskIndex);
             saveTasks(tasks); // Save to file after deletion
-            printBox(
+            ui.printBox(
                 "Noted. I've removed this task:",
                 "  " + deletedTask,
                 "Now you have " + tasks.size() + " tasks in the list."
@@ -273,7 +265,7 @@ public class Buddy {
      * @param userInput the full user input string
      * @throws BuddyException if the date format is invalid
      */
-    private static void handleFind(ArrayList<Task> tasks, String userInput) throws BuddyException {
+    private void handleFind(ArrayList<Task> tasks, String userInput) throws BuddyException {
         String dateStr = userInput.length() > 5 ? userInput.substring(5).trim() : "";
         
         if (dateStr.isEmpty()) {
@@ -301,17 +293,17 @@ public class Buddy {
             }
 
             if (matchingTasks.isEmpty()) {
-                printBox("No tasks found on " + searchDate);
+                ui.printBox("No tasks found on " + searchDate);
             } else {
                 String[] lines = new String[matchingTasks.size() + 1];
                 lines[0] = "Tasks on " + searchDate + ":";
                 for (int i = 0; i < matchingTasks.size(); i++) {
                     lines[i + 1] = (i + 1) + "." + matchingTasks.get(i);
                 }
-                printBox(lines);
+                ui.printBox(lines);
             }
         } catch (Exception e) {
-            throw new BuddyException("Invalid date format. Use yyyy-MM-dd (e.g., 2019-12-02)");
+            throw new BuddyException("Invalid date format. Use yyyy-MM-dd (e.g., 2026-01-02)");
         }
     }
 
@@ -322,7 +314,7 @@ public class Buddy {
      * @param userInput the full user input string
      * @throws BuddyException if the description is empty
      */
-    private static void handleTodo(ArrayList<Task> tasks, String userInput) throws BuddyException {
+    private void handleTodo(ArrayList<Task> tasks, String userInput) throws BuddyException {
         String description = userInput.length() > 5 ? userInput.substring(5).trim() : "";
         
         // Check for empty description
@@ -334,7 +326,7 @@ public class Buddy {
         Task task = new Todo(description);
         tasks.add(task);
         saveTasks(tasks); // Save to file after adding todo task
-        printBox(
+        ui.printBox(
             "Got it. I've added this task:",
             "  " + task,
             "Now you have " + tasks.size() + " tasks in the list."
@@ -348,7 +340,7 @@ public class Buddy {
      * @param userInput the full user input string
      * @throws BuddyException if the description or time is invalid
      */
-    private static void handleDeadline(ArrayList<Task> tasks, String userInput) throws BuddyException {
+    private void handleDeadline(ArrayList<Task> tasks, String userInput) throws BuddyException {
         String content = userInput.length() > 9 ? userInput.substring(9).trim() : "";
         int byIndex = content.indexOf(" /by ");
         
@@ -365,7 +357,7 @@ public class Buddy {
             Task task = new Deadline(description, by);
             tasks.add(task);
             saveTasks(tasks);
-            printBox(
+            ui.printBox(
                 "Got it. I've added this task:",
                 "  " + task,
                 "Now you have " + tasks.size() + " tasks in the list."
@@ -382,7 +374,7 @@ public class Buddy {
      * @param userInput the full user input string
      * @throws BuddyException if the description, start time, or end time is invalid
      */
-    private static void handleEvent(ArrayList<Task> tasks, String userInput) throws BuddyException {
+    private void handleEvent(ArrayList<Task> tasks, String userInput) throws BuddyException {
         String content = userInput.length() > 6 ? userInput.substring(6).trim() : "";
         int fromIndex = content.indexOf(" /from ");
         int toIndex = content.indexOf(" /to ");
@@ -406,7 +398,7 @@ public class Buddy {
             Task task = new Event(description, from, to);
             tasks.add(task);
             saveTasks(tasks);
-            printBox(
+            ui.printBox(
                 "Got it. I've added this task:",
                 "  " + task,
                 "Now you have " + tasks.size() + " tasks in the list."
@@ -416,31 +408,15 @@ public class Buddy {
         }
     }
 
-    
-    /**
-     * Main method to run the Buddy application.
-     *
-     * @param args command-line arguments (not used)
-     */
-    public static void main(String[] args) {
-        // Scanner for user input
-        Scanner scanner = new Scanner(System.in);
-
+    public void run() {
         // List to store tasks
         ArrayList<Task> tasks = loadTasks();
 
         // Print welcome message
-        String logo = "\t____  _    _ _____  _______     __\n" +
-                "   |  _ \\| |  | |  __ \\|  __ \\ \\   / /\n" +
-                "   | |_) | |  | | |  | | |  | \\ \\_/ / \n" +
-                "   |  _ <| |  | | |  | | |  | |\\   /  \n" +
-                "   | |_) | |__| | |__| | |__| | | |   \n" +
-                "   |____/ \\____/|_____/|_____/  |_|   \n";
-        System.out.println(logo);
-        printBox("Hello I'm Buddy!", "What can I do for you?");
+        ui.showWelcome();
         
         // Read the first user input
-        String userInput = scanner.nextLine();
+        String userInput = ui.readCommand();
 
         // Main command processing loop
         while (true) {
@@ -466,15 +442,24 @@ public class Buddy {
                 default -> throw new BuddyException("I don't recognize that command.");
                 }
             } catch (BuddyException e) {
-                printBox("Oh No! " + e.getMessage());
+                ui.showError(e.getMessage());
             }
 
             // Read the next user input
-            userInput = scanner.nextLine();
+            userInput = ui.readCommand();
         }
 
         // Close the scanner and print goodbye message
-        scanner.close();
-        printBox("Bye. Hope to see you again soon!");
+        ui.close();
+        ui.showGoodbye();
+    }
+    
+    /**
+     * Main method to run the Buddy application.
+     *
+     * @param args command-line arguments (not used)
+     */
+    public static void main(String[] args) {
+        new Buddy().run();
     }
 }
