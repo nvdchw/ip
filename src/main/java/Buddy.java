@@ -19,18 +19,14 @@ public class Buddy {
     /**
      * Saves all tasks to the data file.
      *
-     * @param tasks the list of tasks to save
+     * @param taskList the list of tasks to save
      */
-    private void saveTasks(ArrayList<Task> tasks) {
+    private void saveTasks(TaskList taskList) {
         try {
-            ArrayList<String> taskStrings = new ArrayList<>();
-            for (Task task : tasks) {
-                taskStrings.add(task.toFileFormat());
-            }
-            storage.save(taskStrings);
+            storage.save(new ArrayList<>(taskList.toFileFormat()));
         } catch (BuddyException e) {
             ui.showError("Error saving tasks: " + e.getMessage());
-        }
+        }   
     }
 
     /**
@@ -38,15 +34,15 @@ public class Buddy {
      *
      * @return the list of loaded tasks
      */
-    private ArrayList<Task> loadTasks() {
-        ArrayList<Task> tasks = new ArrayList<>();
+    private TaskList loadTasks() {
+        TaskList taskList = new TaskList();
         
         try {
             ArrayList<String> lines = new ArrayList<>(storage.load());
             for (String line : lines) {
                 try {
                     Task task = TaskParser.parseFromFile(line);
-                    tasks.add(task);
+                    taskList.addTask(task);
                 } catch (BuddyException e) {
                     // Skip corrupted lines
                     System.out.println("Warning: Skipping corrupted line: " + line);
@@ -56,26 +52,26 @@ public class Buddy {
             ui.showError("Error loading tasks: " + e.getMessage());
         }
 
-        return tasks;
+        return taskList;
     }
 
     /**
      * Handler for the 'list' command.
      *
-     * @param tasks the list of tasks
+     * @param taskList the list of tasks
      */
-    private void handleList(ArrayList<Task> tasks) {
+    private void handleList(TaskList taskList) {
         // If no tasks, inform the user
-        if (tasks.isEmpty()) {
+        if (taskList.isEmpty()) {
             ui.printBox("No tasks yet. Add one to get started!");
             return;
         }
 
         // Prepare lines to print the task list
-        String[] lines = new String[tasks.size() + 1];
+        String[] lines = new String[taskList.size() + 1];
         lines[0] = "Here are the tasks in your list:";
-        for (int i = 0; i < tasks.size(); i++) {
-            lines[i + 1] = (i + 1) + "." + tasks.get(i);
+        for (int i = 0; i < taskList.size(); i++) {
+            lines[i + 1] = (i + 1) + "." + taskList.getTask(i);
         }
         ui.printBox(lines);
     }
@@ -83,25 +79,25 @@ public class Buddy {
     /**
      * Handler for the 'mark' command.
      *
-     * @param tasks the list of tasks
+     * @param taskList the list of tasks
      * @param userInput the full user input string
      * @throws BuddyException if the task number is invalid
      */
-    private void handleMark(ArrayList<Task> tasks, String userInput) throws BuddyException {
+    private void handleMark(TaskList taskList, String userInput) throws BuddyException {
         try {
             int taskIndex = Parser.parseTaskNumber(userInput, 4);
             
             // Check for valid task index
-            if (taskIndex < 0 || taskIndex >= tasks.size()) {
+            if (taskIndex < 0 || taskIndex >= taskList.size()) {
                 throw new BuddyException("Task number does not exist.");
             }
 
             // Mark the task as done
-            tasks.get(taskIndex).markAsDone();
-            saveTasks(tasks); // Save to file after marking
+            taskList.getTask(taskIndex).markAsDone();
+            saveTasks(taskList); // Save to file after marking
             ui.printBox(
                 "Nice! I've marked this task as done:",
-                "  " + tasks.get(taskIndex)
+                "  " + taskList.getTask(taskIndex)
             );
         } catch (NumberFormatException e) {
             // Handle invalid number format
@@ -112,25 +108,25 @@ public class Buddy {
     /**
      * Handler for the 'unmark' command.
      *
-     * @param tasks the list of tasks
+     * @param taskList the list of tasks
      * @param userInput the full user input string
      * @throws BuddyException if the task number is invalid
      */
-    private void handleUnmark(ArrayList<Task> tasks, String userInput) throws BuddyException {
+    private void handleUnmark(TaskList taskList, String userInput) throws BuddyException {
         try {
             int taskIndex = Parser.parseTaskNumber(userInput, 7);
             
             // Check for valid task index
-            if (taskIndex < 0 || taskIndex >= tasks.size()) {
+            if (taskIndex < 0 || taskIndex >= taskList.size()) {
                 throw new BuddyException("Task number does not exist.");
             }
 
             // Mark the task as not done
-            tasks.get(taskIndex).markAsUndone();
-            saveTasks(tasks); // Save to file after unmarking
+            taskList.getTask(taskIndex).markAsUndone();
+            saveTasks(taskList); // Save to file after unmarking
             ui.printBox(
                 "OK, I've marked this task as not done yet:",
-                "  " + tasks.get(taskIndex)
+                "  " + taskList.getTask(taskIndex)
             );
         } catch (NumberFormatException e) {
             // Handle invalid number format
@@ -141,26 +137,26 @@ public class Buddy {
     /**
      * Handler for the 'delete' command.
      *
-     * @param tasks the list of tasks
+     * @param taskList the list of tasks
      * @param userInput the full user input string
      * @throws BuddyException if the task number is invalid
      */
-    private void handleDelete(ArrayList<Task> tasks, String userInput) throws BuddyException {
+    private void handleDelete(TaskList taskList, String userInput) throws BuddyException {
         try {
             int taskIndex = Parser.parseTaskNumber(userInput, 7);
             
             // Check for valid task index
-            if (taskIndex < 0 || taskIndex >= tasks.size()) {
+            if (taskIndex < 0 || taskIndex >= taskList.size()) {
                 throw new BuddyException("Task number does not exist.");
             }
 
             // Remove the task and inform the user
-            Task deletedTask = tasks.remove(taskIndex);
-            saveTasks(tasks); // Save to file after deletion
+            Task deletedTask = taskList.removeTask(taskIndex);
+            saveTasks(taskList); // Save to file after deletion
             ui.printBox(
                 "Noted. I've removed this task:",
                 "  " + deletedTask,
-                "Now you have " + tasks.size() + " tasks in the list."
+                "Now you have " + taskList.size() + " tasks in the list."
             );
         } catch (NumberFormatException e) {
             // Handle invalid number format
@@ -171,11 +167,11 @@ public class Buddy {
     /**
      * Handler for the 'find' command to find tasks on a specific date.
      *
-     * @param tasks the list of tasks
+     * @param taskList the list of tasks
      * @param userInput the full user input string
      * @throws BuddyException if the date format is invalid
      */
-    private void handleFind(ArrayList<Task> tasks, String userInput) throws BuddyException {
+    private void handleFind(TaskList taskList, String userInput) throws BuddyException {
         String dateString = Parser.parseFindDate(userInput);
 
         try {
@@ -183,7 +179,7 @@ public class Buddy {
                 java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             
             java.util.ArrayList<Task> matchingTasks = new java.util.ArrayList<>();
-            for (Task task : tasks) {
+            for (Task task : taskList.getAllTasks()) {
                 if (task instanceof Deadline deadline) {
                     if (deadline.getDateTime().toLocalDate().equals(searchDate)) {
                         matchingTasks.add(task);
@@ -216,32 +212,32 @@ public class Buddy {
     /**
      * Handler for the 'todo' command.
      *
-     * @param tasks the list of tasks
+     * @param taskList the list of tasks
      * @param userInput the full user input string
      * @throws BuddyException if the description is empty
      */
-    private void handleTodo(ArrayList<Task> tasks, String userInput) throws BuddyException {
+    private void handleTodo(TaskList taskList, String userInput) throws BuddyException {
         String description = Parser.parseTodoDescription(userInput);
 
         // Create and add the todo task
         Task task = new Todo(description);
-        tasks.add(task);
-        saveTasks(tasks); // Save to file after adding todo task
+        taskList.addTask(task);
+        saveTasks(taskList); // Save to file after adding todo task
         ui.printBox(
             "Got it. I've added this task:",
             "  " + task,
-            "Now you have " + tasks.size() + " tasks in the list."
+            "Now you have " + taskList.size() + " tasks in the list."
         );
     }    
 
     /**
      * Handler for the 'deadline' command.
      *
-     * @param tasks the list of tasks
+     * @param taskList the list of tasks
      * @param userInput the full user input string
      * @throws BuddyException if the description or time is invalid
      */
-    private void handleDeadline(ArrayList<Task> tasks, String userInput) throws BuddyException {
+    private void handleDeadline(TaskList taskList, String userInput) throws BuddyException {
         String[] parts = Parser.parseDeadline(userInput);
         String description = parts[0];
         String by = parts[1];
@@ -249,12 +245,12 @@ public class Buddy {
         try {
             // Create and add the deadline task
             Task task = new Deadline(description, by);
-            tasks.add(task);
-            saveTasks(tasks);
+            taskList.addTask(task);
+            saveTasks(taskList);
             ui.printBox(
                 "Got it. I've added this task:",
                 "  " + task,
-                "Now you have " + tasks.size() + " tasks in the list."
+                "Now you have " + taskList.size() + " tasks in the list."
             );
         } catch (IllegalArgumentException e) {
             throw new BuddyException(e.getMessage());
@@ -264,11 +260,11 @@ public class Buddy {
     /**
      * Handler for the 'event' command.
      *
-     * @param tasks the list of tasks
+     * @param taskList the list of tasks
      * @param userInput the full user input string
      * @throws BuddyException if the description, start time, or end time is invalid
      */
-    private void handleEvent(ArrayList<Task> tasks, String userInput) throws BuddyException {
+    private void handleEvent(TaskList taskList, String userInput) throws BuddyException {
         String[] parts = Parser.parseEvent(userInput);
         String description = parts[0];
         String from = parts[1];
@@ -277,12 +273,12 @@ public class Buddy {
         try {
             // Create and add the event task
             Task task = new Event(description, from, to);
-            tasks.add(task);
-            saveTasks(tasks);
+            taskList.addTask(task);
+            saveTasks(taskList);
             ui.printBox(
                 "Got it. I've added this task:",
                 "  " + task,
-                "Now you have " + tasks.size() + " tasks in the list."
+                "Now you have " + taskList.size() + " tasks in the list."
             );
         } catch (IllegalArgumentException e) {
             throw new BuddyException(e.getMessage());
@@ -291,7 +287,7 @@ public class Buddy {
 
     public void run() {
         // List to store tasks
-        ArrayList<Task> tasks = loadTasks();
+        TaskList taskList = loadTasks();
 
         // Print welcome message
         ui.showWelcome();
@@ -312,14 +308,14 @@ public class Buddy {
             // Handle tasks with exception handling
             try {
                 switch (cmd) {
-                case LIST -> handleList(tasks);
-                case MARK -> handleMark(tasks, userInput);
-                case UNMARK -> handleUnmark(tasks, userInput);
-                case DELETE -> handleDelete(tasks, userInput);
-                case TODO -> handleTodo(tasks, userInput);
-                case DEADLINE -> handleDeadline(tasks, userInput);
-                case EVENT -> handleEvent(tasks, userInput);
-                case FIND -> handleFind(tasks, userInput);
+                case LIST -> handleList(taskList);
+                case MARK -> handleMark(taskList, userInput);
+                case UNMARK -> handleUnmark(taskList, userInput);
+                case DELETE -> handleDelete(taskList, userInput);
+                case TODO -> handleTodo(taskList, userInput);
+                case DEADLINE -> handleDeadline(taskList, userInput);
+                case EVENT -> handleEvent(taskList, userInput);
+                case FIND -> handleFind(taskList, userInput);
                 default -> throw new BuddyException("I don't recognize that command.");
                 }
             } catch (BuddyException e) {
