@@ -21,7 +21,7 @@ public class Buddy {
      * Enum for command types.
      */
     private enum Command {
-        LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, BYE, UNKNOWN;
+        LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, FIND, BYE, UNKNOWN;
 
         // Method to parse user input into Command enum
         static Command fromUserInput(String input) {
@@ -36,6 +36,7 @@ public class Buddy {
             case "deadline" -> DEADLINE;
             case "event" -> EVENT;
             case "delete" -> DELETE;
+            case "find" -> FIND;
             case "bye" -> BYE;
             default -> UNKNOWN;
             };
@@ -266,6 +267,55 @@ public class Buddy {
     }
 
     /**
+     * Handler for the 'find' command to find tasks on a specific date.
+     *
+     * @param tasks the list of tasks
+     * @param userInput the full user input string
+     * @throws BuddyException if the date format is invalid
+     */
+    private static void handleFind(ArrayList<Task> tasks, String userInput) throws BuddyException {
+        String dateStr = userInput.length() > 5 ? userInput.substring(5).trim() : "";
+        
+        if (dateStr.isEmpty()) {
+            throw new BuddyException("Find format: find <date> (yyyy-MM-dd)");
+        }
+
+        try {
+            java.time.LocalDate searchDate = java.time.LocalDate.parse(dateStr, 
+                java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            
+            java.util.ArrayList<Task> matchingTasks = new java.util.ArrayList<>();
+            for (Task task : tasks) {
+                if (task instanceof Deadline deadline) {
+                    if (deadline.getDateTime().toLocalDate().equals(searchDate)) {
+                        matchingTasks.add(task);
+                    }
+                } else if (task instanceof Event event) {
+                    java.time.LocalDate startDate = event.getStartTime().toLocalDate();
+                    java.time.LocalDate endDate = event.getEndTime().toLocalDate();
+                    if ((startDate.isBefore(searchDate) || startDate.equals(searchDate)) &&
+                        (endDate.isAfter(searchDate) || endDate.equals(searchDate))) {
+                        matchingTasks.add(task);
+                    }
+                }
+            }
+
+            if (matchingTasks.isEmpty()) {
+                printBox("No tasks found on " + searchDate);
+            } else {
+                String[] lines = new String[matchingTasks.size() + 1];
+                lines[0] = "Tasks on " + searchDate + ":";
+                for (int i = 0; i < matchingTasks.size(); i++) {
+                    lines[i + 1] = (i + 1) + "." + matchingTasks.get(i);
+                }
+                printBox(lines);
+            }
+        } catch (Exception e) {
+            throw new BuddyException("Invalid date format. Use yyyy-MM-dd (e.g., 2019-12-02)");
+        }
+    }
+
+    /**
      * Handler for the 'todo' command.
      *
      * @param tasks the list of tasks
@@ -412,6 +462,7 @@ public class Buddy {
                 case TODO -> handleTodo(tasks, userInput);
                 case DEADLINE -> handleDeadline(tasks, userInput);
                 case EVENT -> handleEvent(tasks, userInput);
+                case FIND -> handleFind(tasks, userInput);
                 default -> throw new BuddyException("I don't recognize that command.");
                 }
             } catch (BuddyException e) {

@@ -35,6 +35,10 @@ public class Deadline extends Task {
         }
     }
 
+    public LocalDateTime getDateTime() {
+        return by;
+    }
+
     @Override
     public String toFileFormat() {
         return "D | " + super.toFileFormat() + " | " + by.format(FILE_FORMAT);

@@ -31,6 +31,14 @@ public class Event extends Task {
         }
     }
 
+    public LocalDateTime getStartTime() {
+        return from;
+    }
+
+    public LocalDateTime getEndTime() {
+        return to;
+    }
+
     @Override
     public String toFileFormat() {
         return "E | " + super.toFileFormat() + " | " + from.format(FILE_FORMAT) + 
