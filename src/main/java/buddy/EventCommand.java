@@ -1,4 +1,7 @@
 package buddy;
+
+import buddy.task.*;
+
 /**
  * Command to add an event task.
  */

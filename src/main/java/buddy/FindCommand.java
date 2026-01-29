@@ -3,6 +3,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import buddy.task.*;
+
 /**
  * Command to find tasks on a specific date.
  */

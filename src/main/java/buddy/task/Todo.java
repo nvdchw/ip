@@ -1,4 +1,4 @@
-package buddy;
+package buddy.task;
 /**
  * Represents a todo task.
  */

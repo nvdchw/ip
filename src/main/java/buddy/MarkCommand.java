@@ -1,4 +1,7 @@
 package buddy;
+
+import buddy.task.TaskList;
+
 /**
  * Command to mark a task as done.
  */

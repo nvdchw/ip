@@ -1,4 +1,7 @@
-package buddy;
+package buddy.task;
+
+import buddy.BuddyException;
+
 /**
  * TaskParser handles parsing tasks from file format strings.
  */
