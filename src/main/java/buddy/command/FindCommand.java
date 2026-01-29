@@ -15,10 +15,23 @@ import buddy.task.*;
 public class FindCommand extends Command {
     private final String userInput;
     
+    /**
+     * Constructs a FindCommand with the given user input.
+     * 
+     * @param userInput The full user input string for the find command.
+     */
     public FindCommand(String userInput) {
         this.userInput = userInput;
     }
     
+    /**
+     * Executes the find command to search for tasks on a specific date.
+     * 
+     * @param taskList The list of tasks to search through.
+     * @param ui The user interface for displaying messages.
+     * @param storage The storage handler (not used in this command).
+     * @throws BuddyException If there is an error parsing the date.
+     */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
         String dateString = Parser.parseFindDate(userInput);
