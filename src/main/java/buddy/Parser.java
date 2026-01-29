@@ -6,7 +6,7 @@ import buddy.command.*;
  * Parser handles parsing and interpreting user commands.
  */
 public class Parser {
-    
+
     /**
      * Parses user input to determine the command type.
      *
@@ -58,7 +58,7 @@ public class Parser {
      * @throws BuddyException if the description is empty
      */
     public static String parseTodoDescription(String input) throws BuddyException {
-        String description = input.length() > 5 ? input.substring(5).trim() : "";
+        String description = input.length() > Constants.TODO_LENGTH ? input.substring(Constants.TODO_LENGTH).trim() : "";
         
         if (description.isEmpty()) {
             throw new BuddyException("A todo needs a description.");
@@ -75,7 +75,7 @@ public class Parser {
      * @throws BuddyException if the format is invalid
      */
     public static String[] parseDeadline(String input) throws BuddyException {
-        String content = input.length() > 9 ? input.substring(9).trim() : "";
+        String content = input.length() > Constants.DEADLINE_LENGTH ? input.substring(Constants.DEADLINE_LENGTH).trim() : "";
         int byIndex = content.indexOf(" /by ");
         
         if (content.isEmpty() || byIndex == -1) {
@@ -100,7 +100,7 @@ public class Parser {
      * @throws BuddyException if the format is invalid
      */
     public static String[] parseEvent(String input) throws BuddyException {
-        String content = input.length() > 6 ? input.substring(6).trim() : "";
+        String content = input.length() > Constants.EVENT_LENGTH ? input.substring(Constants.EVENT_LENGTH).trim() : "";
         int fromIndex = content.indexOf(" /from ");
         int toIndex = content.indexOf(" /to ");
         
@@ -127,7 +127,7 @@ public class Parser {
      * @throws BuddyException if the date is missing
      */
     public static String parseFindDate(String input) throws BuddyException {
-        String dateString = input.length() > 5 ? input.substring(5).trim() : "";
+        String dateString = input.length() > Constants.FIND_LENGTH ? input.substring(Constants.FIND_LENGTH).trim() : "";
         
         if (dateString.isEmpty()) {
             throw new BuddyException("Find format: find <date> (yyyy-MM-dd)");

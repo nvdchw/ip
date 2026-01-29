@@ -1,6 +1,7 @@
 package buddy.command;
 
 import buddy.BuddyException;
+import buddy.Constants;
 import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
@@ -32,7 +33,7 @@ public class DeleteCommand extends Command {
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
         try {
-            int taskIndex = Parser.parseTaskNumber(userInput, 7);
+            int taskIndex = Parser.parseTaskNumber(userInput, Constants.DELETE_LENGTH);
             
             // Check for valid task index
             if (taskIndex < 0 || taskIndex >= taskList.size()) {
@@ -52,7 +53,6 @@ public class DeleteCommand extends Command {
         }
     }
     
-
     private void saveTasks(TaskList taskList, Ui ui, Storage storage) {
         try {
             storage.save(new java.util.ArrayList<>(taskList.toFileFormat()));
