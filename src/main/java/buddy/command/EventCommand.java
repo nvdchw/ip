@@ -1,22 +1,31 @@
+package buddy.command;
+
+import buddy.BuddyException;
+import buddy.Parser;
+import buddy.Storage;
+import buddy.Ui;
+import buddy.task.*;
+
 /**
- * Command to add a deadline task.
+ * Command to add an event task.
  */
-public class DeadlineCommand extends Command {
+public class EventCommand extends Command {
     private final String userInput;
     
-    public DeadlineCommand(String userInput) {
+    public EventCommand(String userInput) {
         this.userInput = userInput;
     }
     
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
-        String[] parts = Parser.parseDeadline(userInput);
+        String[] parts = Parser.parseEvent(userInput);
         String description = parts[0];
-        String by = parts[1];
+        String from = parts[1];
+        String to = parts[2];
 
         try {
-            // Create and add the deadline task
-            Task task = new Deadline(description, by);
+            // Create and add the event task
+            Task task = new Event(description, from, to);
             taskList.addTask(task);
             saveTasks(taskList, ui, storage);
             ui.printBox(

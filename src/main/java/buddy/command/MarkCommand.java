@@ -1,30 +1,37 @@
+package buddy.command;
+
+import buddy.BuddyException;
+import buddy.Parser;
+import buddy.Storage;
+import buddy.Ui;
+import buddy.task.TaskList;
+
 /**
- * Command to delete a task.
+ * Command to mark a task as done.
  */
-public class DeleteCommand extends Command {
+public class MarkCommand extends Command {
     private final String userInput;
     
-    public DeleteCommand(String userInput) {
+    public MarkCommand(String userInput) {
         this.userInput = userInput;
     }
     
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
         try {
-            int taskIndex = Parser.parseTaskNumber(userInput, 7);
+            int taskIndex = Parser.parseTaskNumber(userInput, 4);
             
             // Check for valid task index
             if (taskIndex < 0 || taskIndex >= taskList.size()) {
                 throw new BuddyException("Task number does not exist.");
             }
 
-            // Remove the task and inform the user
-            Task deletedTask = taskList.removeTask(taskIndex);
+            // Mark the task as done
+            taskList.getTask(taskIndex).markAsDone();
             saveTasks(taskList, ui, storage);
             ui.printBox(
-                "Noted. I've removed this task:",
-                "  " + deletedTask,
-                "Now you have " + taskList.size() + " tasks in the list."
+                "Nice! I've marked this task as done:",
+                "  " + taskList.getTask(taskIndex)
             );
         } catch (NumberFormatException e) {
             throw new BuddyException("Please provide a valid task number.");

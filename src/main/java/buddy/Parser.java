@@ -1,3 +1,7 @@
+package buddy;
+
+import buddy.command.*;
+
 /**
  * Parser handles parsing and interpreting user commands.
  */

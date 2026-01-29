@@ -1,3 +1,5 @@
+package buddy;
+
 import java.util.Scanner;
 
 /**
@@ -36,12 +38,14 @@ public class Ui {
      * Shows the welcome message with logo.
      */
     public void showWelcome() {
-        String logo = "\t____  _    _ _____  _______     __\n" +
-                "   |  _ \\| |  | |  __ \\|  __ \\ \\   / /\n" +
-                "   | |_) | |  | | |  | | |  | \\ \\_/ / \n" +
-                "   |  _ <| |  | | |  | | |  | |\\   /  \n" +
-                "   | |_) | |__| | |__| | |__| | | |   \n" +
-                "   |____/ \\____/|_____/|_____/  |_|   \n";
+        String logo = """
+                \t____  _    _ _____  _______     __
+                   |  _ \\| |  | |  __ \\|  __ \\ \\   / /
+                   | |_) | |  | | |  | | |  | \\ \\_/ /
+                   |  _ <| |  | | |  | | |  | |\\   /
+                   | |_) | |__| | |__| | |__| | | |
+                   |____/ \\____/|_____/|_____/  |_|
+                """;
         System.out.println(logo);
         printBox("Hello I'm Buddy!", "What can I do for you?");
     }
