@@ -32,10 +32,20 @@ public class Event extends Task {
         }
     }
 
+    /**
+     * Gets the start time of the event task.
+     *
+     * @return the start time as a LocalDateTime object
+     */
     public LocalDateTime getStartTime() {
         return from;
     }
 
+    /**
+     * Gets the end time of the event task.
+     *
+     * @return the end time as a LocalDateTime object
+     */
     public LocalDateTime getEndTime() {
         return to;
     }

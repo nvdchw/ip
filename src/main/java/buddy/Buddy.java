@@ -15,16 +15,14 @@ public class Buddy {
     private final Ui ui;
     private final Storage storage;
 
+    /**
+     * Constructs a Buddy application instance.
+     */
     public Buddy() {
         this.ui = new Ui();
         this.storage = new Storage(DATA_FILE);
     }
 
-    /**
-     * Loads tasks from the data file.
-     *
-     * @return the list of loaded tasks
-     */
     private TaskList loadTasks() {
         TaskList taskList = new TaskList();
         
@@ -45,6 +43,9 @@ public class Buddy {
         return taskList;
     }
 
+    /**
+     * Runs the Buddy application, handling user input and commands.
+     */
     public void run() {
         TaskList taskList = loadTasks();
         ui.showWelcome();

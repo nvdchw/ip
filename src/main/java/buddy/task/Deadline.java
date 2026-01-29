@@ -10,7 +10,6 @@ public class Deadline extends Task {
     private static final DateTimeFormatter FILE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
     private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mm a");
 
-
     /**
      * Constructs a Deadline task with the given description and due date.
      *
@@ -22,12 +21,6 @@ public class Deadline extends Task {
         this.by = parseDateTime(by);
     }
 
-    /**
-     * Parses a date/time string into a LocalDateTime object.
-     * 
-     * @param dateTimeStr the date/time string to parse
-     * @return the parsed LocalDateTime object
-     */
     private static LocalDateTime parseDateTime(String dateTimeStr) {
         try {
             return LocalDateTime.parse(dateTimeStr, FILE_FORMAT);
@@ -36,6 +29,11 @@ public class Deadline extends Task {
         }
     }
 
+    /**
+     * Gets the due date and time of the deadline task.
+     *
+     * @return the due date and time as a LocalDateTime object
+     */
     public LocalDateTime getDateTime() {
         return by;
     }

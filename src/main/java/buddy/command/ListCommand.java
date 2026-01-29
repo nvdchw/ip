@@ -9,7 +9,14 @@ import buddy.task.TaskList;
  * Command to list all tasks.
  */
 public class ListCommand extends Command {
-    
+    /**
+     * Executes the list command to display all tasks.
+     * 
+     * @param taskList The list of tasks to display.
+     * @param ui The user interface for displaying messages.
+     * @param storage The storage handler (not used in this command).
+     * @throws BuddyException Not thrown in this command.
+     */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
         // If no tasks, inform the user
