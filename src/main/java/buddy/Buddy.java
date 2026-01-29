@@ -1,6 +1,7 @@
 package buddy;
 import java.util.ArrayList;
 
+import buddy.command.Command;
 import buddy.task.*;
 
 /**

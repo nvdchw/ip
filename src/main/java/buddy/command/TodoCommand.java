@@ -1,5 +1,9 @@
-package buddy;
+package buddy.command;
 
+import buddy.BuddyException;
+import buddy.Parser;
+import buddy.Storage;
+import buddy.Ui;
 import buddy.task.*;
 
 /**

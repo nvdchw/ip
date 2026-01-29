@@ -1,32 +1,36 @@
-package buddy;
+package buddy.command;
 
+import buddy.BuddyException;
+import buddy.Parser;
+import buddy.Storage;
+import buddy.Ui;
 import buddy.task.TaskList;
 
 /**
- * Command to mark a task as done.
+ * Command to unmark a task (mark as not done).
  */
-public class MarkCommand extends Command {
+public class UnmarkCommand extends Command {
     private final String userInput;
     
-    public MarkCommand(String userInput) {
+    public UnmarkCommand(String userInput) {
         this.userInput = userInput;
     }
     
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
         try {
-            int taskIndex = Parser.parseTaskNumber(userInput, 4);
+            int taskIndex = Parser.parseTaskNumber(userInput, 7);
             
             // Check for valid task index
             if (taskIndex < 0 || taskIndex >= taskList.size()) {
                 throw new BuddyException("Task number does not exist.");
             }
 
-            // Mark the task as done
-            taskList.getTask(taskIndex).markAsDone();
+            // Mark the task as not done
+            taskList.getTask(taskIndex).markAsUndone();
             saveTasks(taskList, ui, storage);
             ui.printBox(
-                "Nice! I've marked this task as done:",
+                "OK, I've marked this task as not done yet:",
                 "  " + taskList.getTask(taskIndex)
             );
         } catch (NumberFormatException e) {
