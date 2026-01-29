@@ -43,12 +43,4 @@ public class TodoCommand extends Command {
             "Now you have " + taskList.size() + " tasks in the list."
         );
     }
-    
-    private void saveTasks(TaskList taskList, Ui ui, Storage storage) {
-        try {
-            storage.save(new java.util.ArrayList<>(taskList.toFileFormat()));
-        } catch (BuddyException e) {
-            ui.showError("Error saving tasks: " + e.getMessage());
-        }
-    }
 }

@@ -1,5 +1,7 @@
 package buddy.command;
 
+import java.util.ArrayList;
+
 import buddy.BuddyException;
 import buddy.Storage;
 import buddy.Ui;
@@ -27,5 +29,20 @@ public abstract class Command {
      */
     public boolean isExit() {
         return false;
+    }
+
+    /**
+     * Saves the task list to storage.
+     * 
+     * @param taskList The task list to save.
+     * @param ui The user interface for error display.
+     * @param storage The storage handler.
+     */
+    protected void saveTasks(TaskList taskList, Ui ui, Storage storage) {
+        try {
+            storage.save(new ArrayList<>(taskList.toFileFormat()));
+        } catch (BuddyException e) {
+            ui.showError("Error saving tasks: " + e.getMessage());
+        }
     }
 }
