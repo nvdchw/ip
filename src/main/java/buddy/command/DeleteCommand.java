@@ -52,12 +52,4 @@ public class DeleteCommand extends Command {
             throw new BuddyException("Please provide a valid task number.");
         }
     }
-    
-    private void saveTasks(TaskList taskList, Ui ui, Storage storage) {
-        try {
-            storage.save(new java.util.ArrayList<>(taskList.toFileFormat()));
-        } catch (BuddyException e) {
-            ui.showError("Error saving tasks: " + e.getMessage());
-        }
-    }
 }
