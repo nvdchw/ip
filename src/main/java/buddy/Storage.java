@@ -1,3 +1,4 @@
+package buddy;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -59,7 +60,9 @@ public class Storage {
             
             // Create parent directory if it doesn't exist
             if (parentDir != null && !parentDir.exists()) {
-                parentDir.mkdirs();
+                if (!parentDir.mkdirs()) {
+                    throw new BuddyException("Failed to create directory: " + parentDir.getAbsolutePath());
+                }
             }
 
             FileWriter writer = new FileWriter(file);

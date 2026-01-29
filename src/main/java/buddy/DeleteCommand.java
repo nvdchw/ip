@@ -1,10 +1,11 @@
+package buddy;
 /**
- * Command to unmark a task (mark as not done).
+ * Command to delete a task.
  */
-public class UnmarkCommand extends Command {
+public class DeleteCommand extends Command {
     private final String userInput;
     
-    public UnmarkCommand(String userInput) {
+    public DeleteCommand(String userInput) {
         this.userInput = userInput;
     }
     
@@ -18,12 +19,13 @@ public class UnmarkCommand extends Command {
                 throw new BuddyException("Task number does not exist.");
             }
 
-            // Mark the task as not done
-            taskList.getTask(taskIndex).markAsUndone();
+            // Remove the task and inform the user
+            Task deletedTask = taskList.removeTask(taskIndex);
             saveTasks(taskList, ui, storage);
             ui.printBox(
-                "OK, I've marked this task as not done yet:",
-                "  " + taskList.getTask(taskIndex)
+                "Noted. I've removed this task:",
+                "  " + deletedTask,
+                "Now you have " + taskList.size() + " tasks in the list."
             );
         } catch (NumberFormatException e) {
             throw new BuddyException("Please provide a valid task number.");

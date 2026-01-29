@@ -1,3 +1,4 @@
+package buddy;
 /**
  * TaskParser handles parsing tasks from file format strings.
  */

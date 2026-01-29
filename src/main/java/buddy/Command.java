@@ -1,3 +1,4 @@
+package buddy;
 /**
  * Abstract base class for all commands.
  */

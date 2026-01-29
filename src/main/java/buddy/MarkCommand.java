@@ -1,3 +1,4 @@
+package buddy;
 /**
  * Command to mark a task as done.
  */

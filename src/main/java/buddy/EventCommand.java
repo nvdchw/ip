@@ -1,3 +1,4 @@
+package buddy;
 /**
  * Command to add an event task.
  */

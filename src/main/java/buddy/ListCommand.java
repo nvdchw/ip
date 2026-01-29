@@ -1,3 +1,4 @@
+package buddy;
 /**
  * Command to list all tasks.
  */

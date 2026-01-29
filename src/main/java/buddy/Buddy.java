@@ -1,3 +1,5 @@
+package buddy;
+
 import java.util.ArrayList;
 
 /**

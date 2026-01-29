@@ -1,3 +1,5 @@
+package buddy;
+
 /**
  * Command to exit the application.
  */

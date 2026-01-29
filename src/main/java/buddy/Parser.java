@@ -1,3 +1,4 @@
+package buddy;
 /**
  * Parser handles parsing and interpreting user commands.
  */
