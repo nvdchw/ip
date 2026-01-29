@@ -49,12 +49,4 @@ public class DeadlineCommand extends Command {
             throw new BuddyException(e.getMessage());
         }
     }
-    
-    private void saveTasks(TaskList taskList, Ui ui, Storage storage) {
-        try {
-            storage.save(new java.util.ArrayList<>(taskList.toFileFormat()));
-        } catch (BuddyException e) {
-            ui.showError("Error saving tasks: " + e.getMessage());
-        }
-    }
 }
