@@ -4,7 +4,10 @@ import buddy.BuddyException;
 import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
-import buddy.task.*;
+
+import buddy.task.Task;
+import buddy.task.TaskList;
+import buddy.task.Event;
 
 /**
  * Command to add an event task.

@@ -5,7 +5,9 @@ import buddy.Constants;
 import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
-import buddy.task.*;
+
+import buddy.task.Task;
+import buddy.task.TaskList;
 
 /**
  * Command to delete a task.

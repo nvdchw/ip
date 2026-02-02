@@ -1,4 +1,5 @@
 package buddy;
+
 /**
  * Exception class for Buddy application.
  */

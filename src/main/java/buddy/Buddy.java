@@ -1,8 +1,12 @@
 package buddy;
+
 import java.util.ArrayList;
 
 import buddy.command.Command;
-import buddy.task.*;
+
+import buddy.task.Task;
+import buddy.task.TaskList;
+import buddy.task.TaskParser;
 
 /**
  * Buddy is a simple command-line task management application.
