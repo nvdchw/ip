@@ -5,7 +5,6 @@ import buddy.Constants;
 import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
-
 import buddy.task.Task;
 import buddy.task.TaskList;
 
@@ -14,10 +13,8 @@ import buddy.task.TaskList;
  */
 public class DeleteCommand extends Command {
     private final String userInput;
-    
     /**
      * Constructs a DeleteCommand with the given user input.
-     * 
      * @param userInput The full user input string for the delete command.
      */
     public DeleteCommand(String userInput) {
@@ -26,7 +23,6 @@ public class DeleteCommand extends Command {
 
     /**
      * Executes the delete command to remove a task.
-     * 
      * @param taskList The list of tasks to delete from.
      * @param ui The user interface for displaying messages.
      * @param storage The storage handler for saving tasks.
@@ -36,7 +32,6 @@ public class DeleteCommand extends Command {
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
         try {
             int taskIndex = Parser.parseTaskNumber(userInput, Constants.DELETE_LENGTH);
-            
             // Check for valid task index
             if (taskIndex < 0 || taskIndex >= taskList.size()) {
                 throw new BuddyException("Task number does not exist.");

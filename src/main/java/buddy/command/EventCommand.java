@@ -4,29 +4,25 @@ import buddy.BuddyException;
 import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
-
+import buddy.task.Event;
 import buddy.task.Task;
 import buddy.task.TaskList;
-import buddy.task.Event;
+
 
 /**
  * Command to add an event task.
  */
 public class EventCommand extends Command {
     private final String userInput;
-    
     /**
      * Constructs an EventCommand with the given user input.
-     * 
      * @param userInput The full user input string for the event command.
      */
     public EventCommand(String userInput) {
         this.userInput = userInput;
     }
-    
     /**
      * Executes the event command to add an event task.
-     * 
      * @param taskList The list of tasks to add the event to.
      * @param ui The user interface for displaying messages.
      * @param storage The storage handler for saving tasks.

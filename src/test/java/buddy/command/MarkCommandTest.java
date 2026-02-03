@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import buddy.BuddyException;
 import buddy.Storage;
 import buddy.Ui;
-
 import buddy.task.TaskList;
 import buddy.task.Todo;
 
@@ -58,8 +57,8 @@ public class MarkCommandTest {
     }
 
     private static class FakeStorage extends Storage {
-        boolean saveCalled = false;
-        List<String> lastSaved = List.of();
+        private boolean saveCalled = false;
+        private List<String> lastSaved = List.of();
 
         FakeStorage() {
             super("dummy.txt");

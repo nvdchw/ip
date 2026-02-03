@@ -1,4 +1,5 @@
 package buddy.command;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -7,30 +8,26 @@ import buddy.BuddyException;
 import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
-
-import buddy.task.Task;
-import buddy.task.TaskList;
 import buddy.task.Deadline;
 import buddy.task.Event;
+import buddy.task.Task;
+import buddy.task.TaskList;
+
 
 /**
  * Command to find tasks by date or keyword search.
  */
 public class FindCommand extends Command {
     private final String userInput;
-    
     /**
      * Constructs a FindCommand with the given user input.
-     * 
      * @param userInput The full user input string for the find command.
      */
     public FindCommand(String userInput) {
         this.userInput = userInput;
     }
-    
     /**
      * Executes the find command to search for tasks by date or keyword.
-     * 
      * @param taskList The list of tasks to search through.
      * @param ui The user interface for displaying messages.
      * @param storage The storage handler (not used in this command).
@@ -42,7 +39,7 @@ public class FindCommand extends Command {
 
         // Try to parse as date first
         try {
-            LocalDate searchDate = LocalDate.parse(searchTerm, 
+            LocalDate searchDate = LocalDate.parse(searchTerm,
                 DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             findByDate(taskList, ui, searchDate);
         } catch (Exception e) {
@@ -66,8 +63,8 @@ public class FindCommand extends Command {
             } else if (task instanceof Event event) {
                 LocalDate startDate = event.getStartTime().toLocalDate();
                 LocalDate endDate = event.getEndTime().toLocalDate();
-                if ((startDate.isBefore(searchDate) || startDate.equals(searchDate)) &&
-                    (endDate.isAfter(searchDate) || endDate.equals(searchDate))) {
+                if ((startDate.isBefore(searchDate) || startDate.equals(searchDate))
+                        && (endDate.isAfter(searchDate) || endDate.equals(searchDate))) {
                     matchingTasks.add(task);
                 }
             }
@@ -92,7 +89,6 @@ public class FindCommand extends Command {
     private void findByKeyword(TaskList taskList, Ui ui, String keyword) {
         ArrayList<Task> matchingTasks = new ArrayList<>();
         String lowerKeyword = keyword.toLowerCase();
-        
         // Search tasks by keyword in description
         for (Task task : taskList.getAllTasks()) {
             if (task.getDescription().toLowerCase().contains(lowerKeyword)) {

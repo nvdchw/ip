@@ -1,7 +1,7 @@
 package buddy;
 
-import buddy.command.Command;
 import buddy.command.ByeCommand;
+import buddy.command.Command;
 import buddy.command.DeadlineCommand;
 import buddy.command.DeleteCommand;
 import buddy.command.EventCommand;
@@ -26,7 +26,6 @@ public class Parser {
         String trimmed = input.trim();
         int space = trimmed.indexOf(' ');
         String keyword = (space == -1) ? trimmed : trimmed.substring(0, space);
-        
         return switch (keyword.toLowerCase()) {
         case "list" -> new ListCommand();
         case "mark" -> new MarkCommand(input);
@@ -37,10 +36,9 @@ public class Parser {
         case "event" -> new EventCommand(input);
         case "find" -> new FindCommand(input);
         case "bye" -> new ByeCommand();
-        default -> throw new BuddyException("I don't recognize that command.");
+        default -> throw new BuddyException("I don't recognise that command.");
         };
     }
-    
     /**
      * Extracts the task number from mark/unmark/delete commands.
      *
@@ -58,7 +56,6 @@ public class Parser {
             throw new BuddyException("Please provide a valid task number.");
         }
     }
-    
     /**
      * Parses the description from a todo command.
      *
@@ -67,15 +64,13 @@ public class Parser {
      * @throws BuddyException if the description is empty
      */
     public static String parseTodoDescription(String input) throws BuddyException {
-        String description = input.length() > Constants.TODO_LENGTH ? input.substring(Constants.TODO_LENGTH).trim() : "";
-        
+        String description = input.length() > Constants.TODO_LENGTH
+                ? input.substring(Constants.TODO_LENGTH).trim() : "";
         if (description.isEmpty()) {
             throw new BuddyException("A todo needs a description.");
         }
-        
         return description;
     }
-    
     /**
      * Parses a deadline command into description and deadline time.
      *
@@ -84,23 +79,20 @@ public class Parser {
      * @throws BuddyException if the format is invalid
      */
     public static String[] parseDeadline(String input) throws BuddyException {
-        String content = input.length() > Constants.DEADLINE_LENGTH ? input.substring(Constants.DEADLINE_LENGTH).trim() : "";
+        String content = input.length() > Constants.DEADLINE_LENGTH
+                ? input.substring(Constants.DEADLINE_LENGTH).trim() : "";
+
         int byIndex = content.indexOf(" /by ");
-        
         if (content.isEmpty() || byIndex == -1) {
             throw new BuddyException("Deadline format: deadline <desc> /by <time>");
         }
-        
         String description = content.substring(0, byIndex).trim();
         String by = content.substring(byIndex + 5).trim();
-        
         if (description.isEmpty() || by.isEmpty()) {
             throw new BuddyException("Deadline needs description and time.");
         }
-        
         return new String[]{description, by};
     }
-    
     /**
      * Parses an event command into description, start time, and end time.
      *
@@ -112,22 +104,17 @@ public class Parser {
         String content = input.length() > Constants.EVENT_LENGTH ? input.substring(Constants.EVENT_LENGTH).trim() : "";
         int fromIndex = content.indexOf(" /from ");
         int toIndex = content.indexOf(" /to ");
-        
         if (content.isEmpty() || fromIndex == -1 || toIndex == -1 || toIndex < fromIndex) {
             throw new BuddyException("Event format: event <desc> /from <start> /to <end>");
         }
-        
         String description = content.substring(0, fromIndex).trim();
         String from = content.substring(fromIndex + 7, toIndex).trim();
         String to = content.substring(toIndex + 5).trim();
-        
         if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
             throw new BuddyException("Event needs description, start, and end time.");
         }
-        
         return new String[]{description, from, to};
     }
-    
     /**
      * Parses the date from a find command.
      *
@@ -137,11 +124,9 @@ public class Parser {
      */
     public static String parseFindDate(String input) throws BuddyException {
         String dateString = input.length() > Constants.FIND_LENGTH ? input.substring(Constants.FIND_LENGTH).trim() : "";
-        
         if (dateString.isEmpty()) {
             throw new BuddyException("Find format: find <date> (yyyy-MM-dd)");
         }
-        
         return dateString;
     }
 }

@@ -3,7 +3,6 @@ package buddy.command;
 import buddy.BuddyException;
 import buddy.Storage;
 import buddy.Ui;
-
 import buddy.task.TaskList;
 
 /**
@@ -12,7 +11,6 @@ import buddy.task.TaskList;
 public class ListCommand extends Command {
     /**
      * Executes the list command to display all tasks.
-     * 
      * @param taskList The list of tasks to display.
      * @param ui The user interface for displaying messages.
      * @param storage The storage handler (not used in this command).

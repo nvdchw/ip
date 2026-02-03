@@ -4,7 +4,6 @@ import buddy.BuddyException;
 import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
-
 import buddy.task.Task;
 import buddy.task.TaskList;
 import buddy.task.Todo;
@@ -14,19 +13,15 @@ import buddy.task.Todo;
  */
 public class TodoCommand extends Command {
     private final String userInput;
-    
     /**
      * Constructs a TodoCommand with the given user input.
-     * 
      * @param userInput The full user input string for the todo command.
      */
     public TodoCommand(String userInput) {
         this.userInput = userInput;
     }
-    
     /**
      * Executes the todo command to add a todo task.
-     * 
      * @param taskList The list of tasks to add the todo to.
      * @param ui The user interface for displaying messages.
      * @param storage The storage handler for saving tasks.

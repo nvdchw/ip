@@ -6,7 +6,6 @@ import buddy.BuddyException;
  * TaskParser handles parsing tasks from file format strings.
  */
 public class TaskParser {
-    
     /**
      * Parses a task from a file format string.
      *
@@ -30,11 +29,15 @@ public class TaskParser {
         Task task = switch (type) {
         case "T" -> new Todo(description);
         case "D" -> {
-            if (parts.length < 4) throw new BuddyException("Invalid deadline format");
+            if (parts.length < 4) {
+                throw new BuddyException("Invalid deadline format");
+            }
             yield new Deadline(description, parts[3]);
         }
         case "E" -> {
-            if (parts.length < 5) throw new BuddyException("Invalid event format");
+            if (parts.length < 5) {
+                throw new BuddyException("Invalid event format");
+            }
             yield new Event(description, parts[3], parts[4]);
         }
         default -> throw new BuddyException("Unknown task type: " + type);
