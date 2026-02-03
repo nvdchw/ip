@@ -5,14 +5,12 @@ import java.util.ArrayList;
 import buddy.BuddyException;
 import buddy.Storage;
 import buddy.Ui;
-
 import buddy.task.TaskList;
 
 /**
  * Abstract base class for all commands.
  */
 public abstract class Command {
-    
     /**
      * Executes the command.
      *
@@ -22,7 +20,6 @@ public abstract class Command {
      * @throws BuddyException if the command execution fails
      */
     public abstract void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException;
-    
     /**
      * Checks if this command should exit the application.
      *
@@ -31,10 +28,8 @@ public abstract class Command {
     public boolean isExit() {
         return false;
     }
-
     /**
      * Saves the task list to storage.
-     * 
      * @param taskList The task list to save.
      * @param ui The user interface for error display.
      * @param storage The storage handler.

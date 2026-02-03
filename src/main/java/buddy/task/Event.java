@@ -7,10 +7,10 @@ import java.time.format.DateTimeFormatter;
  * Represents an event task with a description, start time, and end time.
  */
 public class Event extends Task {
-    protected LocalDateTime from;
-    protected LocalDateTime to;
     private static final DateTimeFormatter FILE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
     private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mm a");
+    protected LocalDateTime from;
+    protected LocalDateTime to;
 
     /**
      * Constructs an Event task with the given description, start time, and end time.
@@ -53,13 +53,13 @@ public class Event extends Task {
 
     @Override
     public String toFileFormat() {
-        return "E | " + super.toFileFormat() + " | " + from.format(FILE_FORMAT) + 
-        " | " + to.format(FILE_FORMAT);
+        return "E | " + super.toFileFormat() + " | " + from.format(FILE_FORMAT)
+                + " | " + to.format(FILE_FORMAT);
     }
 
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + from.format(DISPLAY_FORMAT) + 
-        " to: " + to.format(DISPLAY_FORMAT) + ")";
+        return "[E]" + super.toString() + " (from: " + from.format(DISPLAY_FORMAT)
+                + " to: " + to.format(DISPLAY_FORMAT) + ")";
     }
 }

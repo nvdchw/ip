@@ -3,7 +3,6 @@ package buddy;
 import java.util.ArrayList;
 
 import buddy.command.Command;
-
 import buddy.task.Task;
 import buddy.task.TaskList;
 import buddy.task.TaskParser;
@@ -29,7 +28,6 @@ public class Buddy {
 
     private TaskList loadTasks() {
         TaskList taskList = new TaskList();
-        
         try {
             ArrayList<String> lines = new ArrayList<>(storage.load());
             for (String line : lines) {
@@ -53,14 +51,12 @@ public class Buddy {
     public void run() {
         TaskList taskList = loadTasks();
         ui.showWelcome();
-        
         String userInput = ui.readCommand();
 
         while (true) {
             try {
                 Command command = Parser.parseCommand(userInput);
                 command.execute(taskList, ui, storage);
-                
                 if (command.isExit()) {
                     break;
                 }
@@ -74,7 +70,6 @@ public class Buddy {
         ui.close();
         ui.showGoodbye();
     }
-    
     /**
      * Main method to run the Buddy application.
      *

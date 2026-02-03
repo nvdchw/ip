@@ -33,7 +33,6 @@ public class Storage {
     public List<String> load() throws BuddyException {
         List<String> tasks = new ArrayList<>();
         File file = new File(filePath);
-        
         if (!file.exists()) {
             return tasks; // Return empty list if file doesn't exist yet
         }
@@ -58,7 +57,6 @@ public class Storage {
         try {
             File file = new File(filePath);
             File parentDir = file.getParentFile();
-            
             // Create parent directory if it doesn't exist
             if (parentDir != null && !parentDir.exists()) {
                 if (!parentDir.mkdirs()) {

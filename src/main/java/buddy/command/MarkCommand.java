@@ -5,7 +5,6 @@ import buddy.Constants;
 import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
-
 import buddy.task.TaskList;
 
 /**
@@ -13,19 +12,15 @@ import buddy.task.TaskList;
  */
 public class MarkCommand extends Command {
     private final String userInput;
-    
     /**
      * Constructs a MarkCommand with the given user input.
-     * 
      * @param userInput The full user input string for the mark command.
      */
     public MarkCommand(String userInput) {
         this.userInput = userInput;
     }
-    
     /**
      * Executes the mark command to mark a task as done.
-     * 
      * @param taskList The list of tasks to mark from.
      * @param ui The user interface for displaying messages.
      * @param storage The storage handler for saving tasks.
@@ -35,7 +30,6 @@ public class MarkCommand extends Command {
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
         try {
             int taskIndex = Parser.parseTaskNumber(userInput, Constants.MARK_LENGTH);
-            
             // Check for valid task index
             if (taskIndex < 0 || taskIndex >= taskList.size()) {
                 throw new BuddyException("Task number does not exist.");
