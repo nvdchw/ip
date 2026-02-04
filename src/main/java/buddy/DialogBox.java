@@ -60,6 +60,9 @@ public class DialogBox extends HBox {
         case "DeleteCommand":
             dialog.getStyleClass().add("delete-label");
             break;
+        case "Error":
+            dialog.getStyleClass().add("error-label");
+            break;
         default:
             // Do nothing
         }
@@ -69,7 +72,7 @@ public class DialogBox extends HBox {
         return new DialogBox(text, img);
     }
 
-    public static DialogBox getDukeDialog(String text, Image img, String commandType) {
+    public static DialogBox getBuddyDialog(String text, Image img, String commandType) {
         var db = new DialogBox(text, img);
         db.flip();
         db.changeDialogStyle(commandType);

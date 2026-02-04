@@ -38,6 +38,7 @@ public class Buddy {
             String output = ui.getLastOutput();
             return output.isEmpty() ? c.toString() : output;
         } catch (BuddyException e) {
+            commandType = "Error";
             return "Error: " + e.getMessage();
         }
     }

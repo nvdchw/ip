@@ -27,6 +27,11 @@
     -fx-background-color: lightpink;
 }
 
+.error-label {
+    -fx-background-color: red;
+}
+
+
 
 #displayPicture {
     /* Shadow effect on image. */

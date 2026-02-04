@@ -23,7 +23,7 @@ public class MainWindow extends AnchorPane {
     private Buddy buddy;
 
     private final Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
-    private final Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/DaDuke.png"));
+    private final Image buddyImage = new Image(this.getClass().getResourceAsStream("/images/DaBuddy.png"));
 
     @FXML
     public void initialize() {
@@ -45,7 +45,7 @@ public class MainWindow extends AnchorPane {
         String commandType = buddy.getCommandType();
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(response, dukeImage, commandType)
+                DialogBox.getBuddyDialog(response, buddyImage, commandType)
         );
         userInput.clear();
     }
