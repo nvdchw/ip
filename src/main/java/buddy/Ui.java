@@ -7,6 +7,7 @@ import java.util.Scanner;
  */
 public class Ui {
     private final Scanner scanner;
+    private String lastOutput = "";
 
     /**
      * Constructs a Ui instance.
@@ -21,11 +22,18 @@ public class Ui {
      * @param lines the lines of text to print inside the box
      */
     public void printBox(String... lines) {
-        System.out.println("\t____________________________________________________________");
+        StringBuilder sb = new StringBuilder();
+        sb.append("\t____________________________________________________________\n");
         for (String line : lines) {
-            System.out.println("\t" + line);
+            sb.append("\t").append(line).append("\n");
         }
-        System.out.println("\t____________________________________________________________");
+        sb.append("\t____________________________________________________________");
+        lastOutput = sb.toString();
+        System.out.println(lastOutput);
+    }
+
+    public String getLastOutput() {
+        return lastOutput;
     }
 
     /**

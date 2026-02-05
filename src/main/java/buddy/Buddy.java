@@ -17,6 +17,7 @@ public class Buddy {
 
     private final Ui ui;
     private final Storage storage;
+    private String commandType;
 
     /**
      * Constructs a Buddy application instance.
@@ -24,6 +25,25 @@ public class Buddy {
     public Buddy() {
         this.ui = new Ui();
         this.storage = new Storage(DATA_FILE);
+    }
+
+    /**
+     * Generates a response for the user's chat message.
+     */
+    public String getResponse(String input) {
+        try {
+            Command c = Parser.parseCommand(input);
+            c.execute(loadTasks(), ui, storage);
+            commandType = c.getClass().getSimpleName();
+            String output = ui.getLastOutput();
+            return output.isEmpty() ? c.toString() : output;
+        } catch (BuddyException e) {
+            commandType = "Error";
+            return "Error: " + e.getMessage();
+        }
+    }
+    public String getCommandType() {
+        return commandType;
     }
 
     private TaskList loadTasks() {
