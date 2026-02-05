@@ -16,7 +16,7 @@
 
 /* Paste this below reply-label */
 .list-label {
-    -fx-background-color: yellow;
+    -fx-background-color: rgba(253, 253, 123, 0.837);
 }
 
 .marked-label {
@@ -24,11 +24,11 @@
 }
 
 .delete-label {
-    -fx-background-color: lightpink;
+    -fx-background-color: rgb(255, 99, 99);
 }
 
 .error-label {
-    -fx-background-color: red;
+    -fx-background-color: lightpink
 }
 
 

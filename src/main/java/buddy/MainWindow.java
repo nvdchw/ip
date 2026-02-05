@@ -30,7 +30,7 @@ public class MainWindow extends AnchorPane {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
     }
     /** Injects the Duke instance */
-    public void setBuddy (Buddy b) {
+    public void setBuddy(Buddy b) {
         buddy = b;
     }
 
@@ -48,5 +48,9 @@ public class MainWindow extends AnchorPane {
                 DialogBox.getBuddyDialog(response, buddyImage, commandType)
         );
         userInput.clear();
+
+        if (commandType.equals("ByeCommand")) {
+            System.exit(0);
+        }
     }
 }
