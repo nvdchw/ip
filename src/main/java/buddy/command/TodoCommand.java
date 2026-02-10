@@ -29,10 +29,12 @@ public class TodoCommand extends Command {
      */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
-        String description = Parser.parseTodoDescription(userInput);
+        String[] parts = Parser.parseTodo(userInput);
+        String description = parts[0];
+        String tag = parts[1];
 
         // Create and add the todo task
-        Task task = new Todo(description);
+        Task task = new Todo(description, tag);
         taskList.addTask(task);
         saveTasks(taskList, ui, storage);
         ui.printBox(

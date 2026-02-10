@@ -34,10 +34,11 @@ public class EventCommand extends Command {
         String description = parts[0];
         String from = parts[1];
         String to = parts[2];
+        String tag = parts[3];
 
         try {
             // Create and add the event task
-            Task task = new Event(description, from, to);
+            Task task = new Event(description, from, to, tag);
             taskList.addTask(task);
             saveTasks(taskList, ui, storage);
             ui.printBox(

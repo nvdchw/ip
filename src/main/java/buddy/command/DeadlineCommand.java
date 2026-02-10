@@ -33,10 +33,11 @@ public class DeadlineCommand extends Command {
         String[] parts = Parser.parseDeadline(userInput);
         String description = parts[0];
         String by = parts[1];
+        String tag = parts[2];
 
         try {
             // Create and add the deadline task
-            Task task = new Deadline(description, by);
+            Task task = new Deadline(description, by, tag);
             taskList.addTask(task);
             saveTasks(taskList, ui, storage);
             ui.printBox(

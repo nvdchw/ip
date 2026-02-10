@@ -9,13 +9,14 @@ public class Deadline extends Task {
     protected LocalDateTime by;
 
     /**
-     * Constructs a Deadline task with the given description and due date.
+     * Constructs a Deadline task with the given description, due date, and tag.
      *
      * @param description the description of the deadline task
      * @param by the due date of the deadline task
+     * @param tag the optional tag for the deadline task
      */
-    public Deadline(String description, String by) {
-        super(description);
+    public Deadline(String description, String by, String tag) {
+        super(description, tag);
         this.by = DateTimeUtil.parseFileDateTime(by);
     }
 
@@ -31,7 +32,8 @@ public class Deadline extends Task {
     @Override
     public String toFileFormat() {
         return TaskFormat.TYPE_DEADLINE + TaskFormat.DELIMITER + super.toFileFormat()
-                + TaskFormat.DELIMITER + DateTimeUtil.formatFileDateTime(by);
+                + TaskFormat.DELIMITER + DateTimeUtil.formatFileDateTime(by)
+                + formatTagForFile();
     }
 
     @Override
