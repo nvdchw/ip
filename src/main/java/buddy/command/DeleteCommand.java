@@ -2,7 +2,6 @@ package buddy.command;
 
 import buddy.BuddyException;
 import buddy.Constants;
-import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
 import buddy.task.Task;
@@ -30,20 +29,15 @@ public class DeleteCommand extends Command {
      */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
-        try {
-            int taskIndex = Parser.parseTaskNumber(userInput, Constants.DELETE_LENGTH);
-            requireValidIndex(taskIndex, taskList);
+        int taskIndex = parseValidatedIndex(userInput, Constants.DELETE_LENGTH, taskList);
 
-            // Remove the task and inform the user
-            Task deletedTask = taskList.removeTask(taskIndex);
-            saveTasks(taskList, ui, storage);
-            ui.printBox(
-                "Noted. I've removed this task:",
-                "  " + deletedTask,
-                "Now you have " + taskList.size() + " tasks in the list."
-            );
-        } catch (NumberFormatException e) {
-            throw new BuddyException("Please provide a valid task number.");
-        }
+        // Remove the task and inform the user
+        Task deletedTask = taskList.removeTask(taskIndex);
+        saveTasks(taskList, ui, storage);
+        ui.printBox(
+            "Noted. I've removed this task:",
+            "  " + deletedTask,
+            "Now you have " + taskList.size() + " tasks in the list."
+        );
     }
 }

@@ -12,10 +12,9 @@ public class Todo extends Task {
     public Todo(String description) {
         super(description);
     }
-    
     @Override
     public String toFileFormat() {
-        return "T | " + super.toFileFormat();
+        return TaskFormat.TYPE_TODO + TaskFormat.DELIMITER + super.toFileFormat();
     }
 
     @Override

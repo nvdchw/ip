@@ -1,7 +1,6 @@
 package buddy.command;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
@@ -9,6 +8,7 @@ import buddy.BuddyException;
 import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
+import buddy.task.DateTimeUtil;
 import buddy.task.Deadline;
 import buddy.task.Event;
 import buddy.task.Task;
@@ -40,8 +40,7 @@ public class FindCommand extends Command {
 
         // Try to parse as date first
         try {
-            LocalDate searchDate = LocalDate.parse(searchTerm,
-                DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate searchDate = DateTimeUtil.parseFindDate(searchTerm);
             findByDate(taskList, ui, searchDate);
         } catch (DateTimeParseException e) {
             // If date parsing fails, search by keyword

@@ -2,7 +2,6 @@ package buddy.command;
 
 import buddy.BuddyException;
 import buddy.Constants;
-import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
 import buddy.task.TaskList;
@@ -28,19 +27,14 @@ public class MarkCommand extends Command {
      */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
-        try {
-            int taskIndex = Parser.parseTaskNumber(userInput, Constants.MARK_LENGTH);
-            requireValidIndex(taskIndex, taskList);
+        int taskIndex = parseValidatedIndex(userInput, Constants.MARK_LENGTH, taskList);
 
-            // Mark the task as done
-            taskList.getTask(taskIndex).markAsDone();
-            saveTasks(taskList, ui, storage);
-            ui.printBox(
-                "Nice! I've marked this task as done:",
-                "  " + taskList.getTask(taskIndex)
-            );
-        } catch (NumberFormatException e) {
-            throw new BuddyException("Please provide a valid task number.");
-        }
+        // Mark the task as done
+        taskList.getTask(taskIndex).markAsDone();
+        saveTasks(taskList, ui, storage);
+        ui.printBox(
+            "Nice! I've marked this task as done:",
+            "  " + taskList.getTask(taskIndex)
+        );
     }
 }

@@ -56,7 +56,8 @@ public abstract class Task {
      * @return the file format string
      */
     public String toFileFormat() {
-        return (isDone ? "1" : "0") + " | " + description;
+        String doneFlag = isDone ? TaskFormat.DONE_FLAG_TRUE : TaskFormat.DONE_FLAG_FALSE;
+        return doneFlag + TaskFormat.DELIMITER + description;
     }
 
     /**

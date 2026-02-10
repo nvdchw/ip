@@ -15,7 +15,7 @@ public class TaskParser {
      * @throws BuddyException if the line format is invalid
      */
     public static Task parseFromFile(String line) throws BuddyException {
-        String[] parts = line.split(" \\| ");
+        String[] parts = line.split(TaskFormat.DELIMITER_REGEX);
         requirePartsLength(parts, Constants.MIN_TASK_PARTS, "Invalid file format");
 
         // Extract common fields
@@ -25,12 +25,12 @@ public class TaskParser {
 
         // Create task based on type
         Task task = switch (type) {
-        case "T" -> new Todo(description);
-        case "D" -> {
+        case TaskFormat.TYPE_TODO -> new Todo(description);
+        case TaskFormat.TYPE_DEADLINE -> {
             requirePartsLength(parts, Constants.MIN_DEADLINE_PARTS, "Invalid deadline format");
             yield new Deadline(description, parts[3]);
         }
-        case "E" -> {
+        case TaskFormat.TYPE_EVENT -> {
             requirePartsLength(parts, Constants.MIN_EVENT_PARTS, "Invalid event format");
             yield new Event(description, parts[3], parts[4]);
         }
@@ -53,10 +53,10 @@ public class TaskParser {
     }
 
     private static boolean parseDoneFlag(String flag) throws BuddyException {
-        if ("1".equals(flag)) {
+        if (TaskFormat.DONE_FLAG_TRUE.equals(flag)) {
             return true;
         }
-        if ("0".equals(flag)) {
+        if (TaskFormat.DONE_FLAG_FALSE.equals(flag)) {
             return false;
         }
         throw new BuddyException("Invalid done flag: " + flag);

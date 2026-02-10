@@ -3,6 +3,7 @@ package buddy.command;
 import java.util.ArrayList;
 
 import buddy.BuddyException;
+import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
 import buddy.task.TaskList;
@@ -40,6 +41,21 @@ public abstract class Command {
         if (taskIndex < 0 || taskIndex >= taskList.size()) {
             throw new BuddyException("Task number does not exist.");
         }
+    }
+
+    /**
+     * Parses and validates a 0-based task index from user input.
+     *
+     * @param userInput the full user input
+     * @param commandLength the command keyword length
+     * @param taskList the task list for bounds checking
+     * @return the validated 0-based index
+     * @throws BuddyException if parsing or validation fails
+     */
+    protected int parseValidatedIndex(String userInput, int commandLength, TaskList taskList) throws BuddyException {
+        int taskIndex = Parser.parseTaskNumber(userInput, commandLength);
+        requireValidIndex(taskIndex, taskList);
+        return taskIndex;
     }
     /**
      * Saves the task list to storage.

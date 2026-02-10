@@ -1,14 +1,11 @@
 package buddy.task;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Represents an event task with a description, start time, and end time.
  */
 public class Event extends Task {
-    private static final DateTimeFormatter FILE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-    private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mm a");
     protected LocalDateTime from;
     protected LocalDateTime to;
 
@@ -21,16 +18,8 @@ public class Event extends Task {
      */
     public Event(String description, String from, String to) {
         super(description);
-        this.from = parseDateTime(from);
-        this.to = parseDateTime(to);
-    }
-
-    private static LocalDateTime parseDateTime(String dateTimeStr) {
-        try {
-            return LocalDateTime.parse(dateTimeStr, FILE_FORMAT);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid date/time format. Use yyyy-MM-dd HHmm (e.g., 2019-12-02 1800)");
-        }
+        this.from = DateTimeUtil.parseFileDateTime(from);
+        this.to = DateTimeUtil.parseFileDateTime(to);
     }
 
     /**
@@ -53,13 +42,14 @@ public class Event extends Task {
 
     @Override
     public String toFileFormat() {
-        return "E | " + super.toFileFormat() + " | " + from.format(FILE_FORMAT)
-                + " | " + to.format(FILE_FORMAT);
+        return TaskFormat.TYPE_EVENT + TaskFormat.DELIMITER + super.toFileFormat()
+            + TaskFormat.DELIMITER + DateTimeUtil.formatFileDateTime(from)
+            + TaskFormat.DELIMITER + DateTimeUtil.formatFileDateTime(to);
     }
 
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + from.format(DISPLAY_FORMAT)
-                + " to: " + to.format(DISPLAY_FORMAT) + ")";
+        return "[E]" + super.toString() + " (from: " + DateTimeUtil.formatDisplayDateTime(from)
+            + " to: " + DateTimeUtil.formatDisplayDateTime(to) + ")";
     }
 }
