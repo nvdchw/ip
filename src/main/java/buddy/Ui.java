@@ -23,11 +23,9 @@ public class Ui {
      */
     public void printBox(String... lines) {
         StringBuilder sb = new StringBuilder();
-        sb.append("\t____________________________________________________________\n");
         for (String line : lines) {
             sb.append("\t").append(line).append("\n");
         }
-        sb.append("\t____________________________________________________________");
         lastOutput = sb.toString();
         System.out.println(lastOutput);
     }

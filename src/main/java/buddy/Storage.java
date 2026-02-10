@@ -64,11 +64,11 @@ public class Storage {
                 }
             }
 
-            FileWriter writer = new FileWriter(file);
-            for (String task : tasks) {
-                writer.write(task + System.lineSeparator());
+            try (FileWriter writer = new FileWriter(file)) {
+                for (String task : tasks) {
+                    writer.write(task + System.lineSeparator());
+                }
             }
-            writer.close();
         } catch (IOException e) {
             throw new BuddyException("Error saving tasks to file: " + e.getMessage());
         }
