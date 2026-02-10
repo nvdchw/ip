@@ -64,10 +64,10 @@ public class Parser {
      * @throws BuddyException if the description is empty
      */
     public static String parseTodoDescription(String input) throws BuddyException {
-        if (input.length() <= Constants.TODO_LENGTH) {
+        if (input.length() <= CommandKeyword.TODO.length()) {
             throw new BuddyException("A todo needs a description.");
         }
-        String description = input.substring(Constants.TODO_LENGTH).trim();
+        String description = input.substring(CommandKeyword.TODO.length()).trim();
         if (description.isEmpty()) {
             throw new BuddyException("A todo needs a description.");
         }
@@ -81,10 +81,10 @@ public class Parser {
      * @throws BuddyException if the format is invalid
      */
     public static String[] parseDeadline(String input) throws BuddyException {
-        if (input.length() <= Constants.DEADLINE_LENGTH) {
+        if (input.length() <= CommandKeyword.DEADLINE.length()) {
             throw new BuddyException("Deadline format: deadline <desc> /by <time>");
         }
-        String content = input.substring(Constants.DEADLINE_LENGTH).trim();
+        String content = input.substring(CommandKeyword.DEADLINE.length()).trim();
 
         int byIndex = content.indexOf(Constants.DEADLINE_BY_DELIMITER);
         if (content.isEmpty() || byIndex == -1) {
@@ -105,10 +105,10 @@ public class Parser {
      * @throws BuddyException if the format is invalid
      */
     public static String[] parseEvent(String input) throws BuddyException {
-        if (input.length() <= Constants.EVENT_LENGTH) {
+        if (input.length() <= CommandKeyword.EVENT.length()) {
             throw new BuddyException("Event format: event <desc> /from <start> /to <end>");
         }
-        String content = input.substring(Constants.EVENT_LENGTH).trim();
+        String content = input.substring(CommandKeyword.EVENT.length()).trim();
         int fromIndex = content.indexOf(Constants.EVENT_FROM_DELIMITER);
         int toIndex = content.indexOf(Constants.EVENT_TO_DELIMITER);
         if (content.isEmpty() || fromIndex == -1 || toIndex == -1 || toIndex < fromIndex) {
@@ -130,10 +130,10 @@ public class Parser {
      * @throws BuddyException if the date is missing
      */
     public static String parseFindDate(String input) throws BuddyException {
-        if (input.length() <= Constants.FIND_LENGTH) {
+        if (input.length() <= CommandKeyword.FIND.length()) {
             throw new BuddyException("Find format: find <date> (yyyy-MM-dd)");
         }
-        String dateString = input.substring(Constants.FIND_LENGTH).trim();
+        String dateString = input.substring(CommandKeyword.FIND.length()).trim();
         if (dateString.isEmpty()) {
             throw new BuddyException("Find format: find <date> (yyyy-MM-dd)");
         }

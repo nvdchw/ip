@@ -1,7 +1,7 @@
 package buddy.command;
 
 import buddy.BuddyException;
-import buddy.Constants;
+import buddy.CommandKeyword;
 import buddy.Storage;
 import buddy.Ui;
 import buddy.task.Task;
@@ -29,7 +29,7 @@ public class DeleteCommand extends Command {
      */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
-        int taskIndex = parseValidatedIndex(userInput, Constants.DELETE_LENGTH, taskList);
+        int taskIndex = parseValidatedIndex(userInput, CommandKeyword.DELETE.length(), taskList);
 
         // Remove the task and inform the user
         Task deletedTask = taskList.removeTask(taskIndex);

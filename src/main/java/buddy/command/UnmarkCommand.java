@@ -1,7 +1,7 @@
 package buddy.command;
 
 import buddy.BuddyException;
-import buddy.Constants;
+import buddy.CommandKeyword;
 import buddy.Storage;
 import buddy.Ui;
 import buddy.task.TaskList;
@@ -27,7 +27,7 @@ public class UnmarkCommand extends Command {
      */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
-        int taskIndex = parseValidatedIndex(userInput, Constants.UNMARK_LENGTH, taskList);
+        int taskIndex = parseValidatedIndex(userInput, CommandKeyword.UNMARK.length(), taskList);
 
         // Mark the task as not done
         taskList.getTask(taskIndex).markAsUndone();
