@@ -56,17 +56,8 @@ public class FindCommand extends Command {
 
         // Check Deadlines and Events for matching date
         for (Task task : taskList.getAllTasks()) {
-            if (task instanceof Deadline deadline) {
-                if (deadline.getDateTime().toLocalDate().equals(searchDate)) {
-                    matchingTasks.add(task);
-                }
-            } else if (task instanceof Event event) {
-                LocalDate startDate = event.getStartTime().toLocalDate();
-                LocalDate endDate = event.getEndTime().toLocalDate();
-                if ((startDate.isBefore(searchDate) || startDate.equals(searchDate))
-                        && (endDate.isAfter(searchDate) || endDate.equals(searchDate))) {
-                    matchingTasks.add(task);
-                }
+            if (matchesDate(task, searchDate)) {
+                matchingTasks.add(task);
             }
         }
 
@@ -107,5 +98,22 @@ public class FindCommand extends Command {
             }
             ui.printBox(lines);
         }
+    }
+
+    private boolean matchesDate(Task task, LocalDate searchDate) {
+        if (task instanceof Deadline deadline) {
+            return deadline.getDateTime().toLocalDate().equals(searchDate);
+        }
+        if (task instanceof Event event) {
+            return eventCoversDate(event, searchDate);
+        }
+        return false;
+    }
+
+    private boolean eventCoversDate(Event event, LocalDate searchDate) {
+        LocalDate startDate = event.getStartTime().toLocalDate();
+        LocalDate endDate = event.getEndTime().toLocalDate();
+        return (startDate.isBefore(searchDate) || startDate.equals(searchDate))
+                && (endDate.isAfter(searchDate) || endDate.equals(searchDate));
     }
 }
