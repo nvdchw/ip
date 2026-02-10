@@ -34,11 +34,10 @@ public class Buddy {
      */
     public String getResponse(String input) {
         try {
-            Command c = Parser.parseCommand(input);
-            c.execute(taskList, ui, storage);
-            commandType = CommandType.fromCommand(c);
+            Command command = executeCommand(input);
+            commandType = CommandType.fromCommand(command);
             String output = ui.getLastOutput();
-            return output.isEmpty() ? c.toString() : output;
+            return output.isEmpty() ? command.toString() : output;
         } catch (BuddyException e) {
             commandType = CommandType.ERROR;
             return "Error: " + e.getMessage();
@@ -91,8 +90,7 @@ public class Buddy {
     private void handleUserInputs(String userInput) {
         while (true) {
             try {
-                Command command = Parser.parseCommand(userInput);
-                command.execute(taskList, ui, storage);
+                Command command = executeCommand(userInput);
                 if (command.isExit()) {
                     break;
                 }
@@ -102,6 +100,12 @@ public class Buddy {
 
             userInput = ui.readCommand();
         }
+    }
+
+    private Command executeCommand(String input) throws BuddyException {
+        Command command = Parser.parseCommand(input);
+        command.execute(taskList, ui, storage);
+        return command;
     }
 
     /**
