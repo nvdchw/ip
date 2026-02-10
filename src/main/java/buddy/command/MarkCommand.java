@@ -30,10 +30,7 @@ public class MarkCommand extends Command {
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
         try {
             int taskIndex = Parser.parseTaskNumber(userInput, Constants.MARK_LENGTH);
-            // Check for valid task index
-            if (taskIndex < 0 || taskIndex >= taskList.size()) {
-                throw new BuddyException("Task number does not exist.");
-            }
+            requireValidIndex(taskIndex, taskList);
 
             // Mark the task as done
             taskList.getTask(taskIndex).markAsDone();

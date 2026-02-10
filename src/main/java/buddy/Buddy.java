@@ -17,6 +17,7 @@ public class Buddy {
 
     private final Ui ui;
     private final Storage storage;
+    private final TaskList taskList;
     private String commandType;
 
     /**
@@ -25,6 +26,7 @@ public class Buddy {
     public Buddy() {
         this.ui = new Ui();
         this.storage = new Storage(DATA_FILE);
+        this.taskList = loadTasks();
     }
 
     /**
@@ -33,7 +35,7 @@ public class Buddy {
     public String getResponse(String input) {
         try {
             Command c = Parser.parseCommand(input);
-            c.execute(loadTasks(), ui, storage);
+            c.execute(taskList, ui, storage);
             commandType = c.getClass().getSimpleName();
             String output = ui.getLastOutput();
             return output.isEmpty() ? c.toString() : output;
@@ -47,21 +49,29 @@ public class Buddy {
     }
 
     private TaskList loadTasks() {
-        TaskList taskList = new TaskList();
+        ArrayList<String> lines = loadLines();
+        return parseTasks(lines);
+    }
+
+    private ArrayList<String> loadLines() {
         try {
-            ArrayList<String> lines = new ArrayList<>(storage.load());
-            for (String line : lines) {
-                try {
-                    Task task = TaskParser.parseFromFile(line);
-                    taskList.addTask(task);
-                } catch (BuddyException e) {
-                    System.out.println("Warning: Skipping corrupted line: " + line);
-                }
-            }
+            return new ArrayList<>(storage.load());
         } catch (BuddyException e) {
             ui.showError("Error loading tasks: " + e.getMessage());
+            return new ArrayList<>();
         }
+    }
 
+    private TaskList parseTasks(ArrayList<String> lines) {
+        TaskList taskList = new TaskList();
+        for (String line : lines) {
+            try {
+                Task task = TaskParser.parseFromFile(line);
+                taskList.addTask(task);
+            } catch (BuddyException e) {
+                System.out.println("Warning: Skipping corrupted line: " + line);
+            }
+        }
         return taskList;
     }
 
@@ -69,10 +79,16 @@ public class Buddy {
      * Runs the Buddy application, handling user input and commands.
      */
     public void run() {
-        TaskList taskList = loadTasks();
         ui.showWelcome();
         String userInput = ui.readCommand();
 
+        handleUserInputs(userInput);
+
+        ui.close();
+        ui.showGoodbye();
+    }
+
+    private void handleUserInputs(String userInput) {
         while (true) {
             try {
                 Command command = Parser.parseCommand(userInput);
@@ -86,10 +102,8 @@ public class Buddy {
 
             userInput = ui.readCommand();
         }
-
-        ui.close();
-        ui.showGoodbye();
     }
+
     /**
      * Main method to run the Buddy application.
      *

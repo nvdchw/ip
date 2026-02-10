@@ -32,10 +32,7 @@ public class DeleteCommand extends Command {
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
         try {
             int taskIndex = Parser.parseTaskNumber(userInput, Constants.DELETE_LENGTH);
-            // Check for valid task index
-            if (taskIndex < 0 || taskIndex >= taskList.size()) {
-                throw new BuddyException("Task number does not exist.");
-            }
+            requireValidIndex(taskIndex, taskList);
 
             // Remove the task and inform the user
             Task deletedTask = taskList.removeTask(taskIndex);
