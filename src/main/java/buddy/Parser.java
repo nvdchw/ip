@@ -23,6 +23,8 @@ public class Parser {
      * @return the command type
      */
     public static Command parseCommand(String input) throws BuddyException {
+        assert input != null : "Input should not be null";
+        assert !input.trim().isEmpty() : "Input should not be empty";
         String trimmed = input.trim();
         int space = trimmed.indexOf(' ');
         String keyword = (space == -1) ? trimmed : trimmed.substring(0, space);
@@ -48,6 +50,8 @@ public class Parser {
      * @throws BuddyException if the task number is invalid
      */
     public static int parseTaskNumber(String input, int commandLength) throws BuddyException {
+        assert input != null : "Input should not be null";
+        assert commandLength >= 0 : "Command length should be non-negative";
         try {
             String numberStr = input.substring(commandLength).trim();
             int taskNumber = Integer.parseInt(numberStr);
@@ -64,6 +68,7 @@ public class Parser {
      * @throws BuddyException if the description is empty
      */
     public static String parseTodoDescription(String input) throws BuddyException {
+        assert input != null : "Input should not be null";
         String description = input.length() > Constants.TODO_LENGTH
                 ? input.substring(Constants.TODO_LENGTH).trim() : "";
         if (description.isEmpty()) {
@@ -79,6 +84,7 @@ public class Parser {
      * @throws BuddyException if the format is invalid
      */
     public static String[] parseDeadline(String input) throws BuddyException {
+        assert input != null : "Input should not be null";
         String content = input.length() > Constants.DEADLINE_LENGTH
                 ? input.substring(Constants.DEADLINE_LENGTH).trim() : "";
 
@@ -101,6 +107,7 @@ public class Parser {
      * @throws BuddyException if the format is invalid
      */
     public static String[] parseEvent(String input) throws BuddyException {
+        assert input != null : "Input should not be null";
         String content = input.length() > Constants.EVENT_LENGTH ? input.substring(Constants.EVENT_LENGTH).trim() : "";
         int fromIndex = content.indexOf(" /from ");
         int toIndex = content.indexOf(" /to ");
@@ -123,6 +130,7 @@ public class Parser {
      * @throws BuddyException if the date is missing
      */
     public static String parseFindDate(String input) throws BuddyException {
+        assert input != null : "Input should not be null";
         String dateString = input.length() > Constants.FIND_LENGTH ? input.substring(Constants.FIND_LENGTH).trim() : "";
         if (dateString.isEmpty()) {
             throw new BuddyException("Find format: find <date> (yyyy-MM-dd)");
