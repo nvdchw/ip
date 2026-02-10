@@ -2,6 +2,7 @@ package buddy.command;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import buddy.BuddyException;
@@ -42,7 +43,7 @@ public class FindCommand extends Command {
             LocalDate searchDate = LocalDate.parse(searchTerm,
                 DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             findByDate(taskList, ui, searchDate);
-        } catch (Exception e) {
+        } catch (DateTimeParseException e) {
             // If date parsing fails, search by keyword
             findByKeyword(taskList, ui, searchTerm);
         }

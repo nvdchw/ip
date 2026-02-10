@@ -13,6 +13,9 @@ public class Constants {
     public static final int MARK_LENGTH = 4;
     public static final int UNMARK_LENGTH = 7;
     public static final int DELETE_LENGTH = 7;
+    public static final int MIN_TASK_PARTS = 3;
+    public static final int MIN_DEADLINE_PARTS = 4;
+    public static final int MIN_EVENT_PARTS = 5;
     public static final String DEADLINE_BY_DELIMITER = " /by ";
     public static final String EVENT_FROM_DELIMITER = " /from ";
     public static final String EVENT_TO_DELIMITER = " /to ";
