@@ -22,8 +22,8 @@ public class Main extends Application {
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
             stage.setScene(scene);
-            stage.setMinHeight(220);
-            stage.setMinWidth(450);
+            stage.setMinHeight(Constants.MIN_WINDOW_HEIGHT);
+            stage.setMinWidth(Constants.MIN_WINDOW_WIDTH);
             fxmlLoader.<MainWindow>getController().setBuddy(buddy); // inject the Buddy instance
             stage.show();
         } catch (IOException e) {

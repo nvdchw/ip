@@ -69,8 +69,10 @@ public class Parser {
      */
     public static String parseTodoDescription(String input) throws BuddyException {
         assert input != null : "Input should not be null";
-        String description = input.length() > Constants.TODO_LENGTH
-                ? input.substring(Constants.TODO_LENGTH).trim() : "";
+        if (input.length() <= CommandKeyword.TODO.length()) {
+            throw new BuddyException("A todo needs a description.");
+        }
+        String description = input.substring(CommandKeyword.TODO.length()).trim();
         if (description.isEmpty()) {
             throw new BuddyException("A todo needs a description.");
         }
@@ -85,15 +87,17 @@ public class Parser {
      */
     public static String[] parseDeadline(String input) throws BuddyException {
         assert input != null : "Input should not be null";
-        String content = input.length() > Constants.DEADLINE_LENGTH
-                ? input.substring(Constants.DEADLINE_LENGTH).trim() : "";
+        if (input.length() <= CommandKeyword.DEADLINE.length()) {
+            throw new BuddyException("Deadline format: deadline <desc> /by <time>");
+        }
+        String content = input.substring(CommandKeyword.DEADLINE.length()).trim();
 
-        int byIndex = content.indexOf(" /by ");
+        int byIndex = content.indexOf(Constants.DEADLINE_BY_DELIMITER);
         if (content.isEmpty() || byIndex == -1) {
             throw new BuddyException("Deadline format: deadline <desc> /by <time>");
         }
         String description = content.substring(0, byIndex).trim();
-        String by = content.substring(byIndex + 5).trim();
+        String by = content.substring(byIndex + Constants.DEADLINE_BY_DELIMITER.length()).trim();
         if (description.isEmpty() || by.isEmpty()) {
             throw new BuddyException("Deadline needs description and time.");
         }
@@ -108,15 +112,18 @@ public class Parser {
      */
     public static String[] parseEvent(String input) throws BuddyException {
         assert input != null : "Input should not be null";
-        String content = input.length() > Constants.EVENT_LENGTH ? input.substring(Constants.EVENT_LENGTH).trim() : "";
-        int fromIndex = content.indexOf(" /from ");
-        int toIndex = content.indexOf(" /to ");
+        if (input.length() <= CommandKeyword.EVENT.length()) {
+            throw new BuddyException("Event format: event <desc> /from <start> /to <end>");
+        }
+        String content = input.substring(CommandKeyword.EVENT.length()).trim();
+        int fromIndex = content.indexOf(Constants.EVENT_FROM_DELIMITER);
+        int toIndex = content.indexOf(Constants.EVENT_TO_DELIMITER);
         if (content.isEmpty() || fromIndex == -1 || toIndex == -1 || toIndex < fromIndex) {
             throw new BuddyException("Event format: event <desc> /from <start> /to <end>");
         }
         String description = content.substring(0, fromIndex).trim();
-        String from = content.substring(fromIndex + 7, toIndex).trim();
-        String to = content.substring(toIndex + 5).trim();
+        String from = content.substring(fromIndex + Constants.EVENT_FROM_DELIMITER.length(), toIndex).trim();
+        String to = content.substring(toIndex + Constants.EVENT_TO_DELIMITER.length()).trim();
         if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
             throw new BuddyException("Event needs description, start, and end time.");
         }
@@ -131,7 +138,10 @@ public class Parser {
      */
     public static String parseFindDate(String input) throws BuddyException {
         assert input != null : "Input should not be null";
-        String dateString = input.length() > Constants.FIND_LENGTH ? input.substring(Constants.FIND_LENGTH).trim() : "";
+        if (input.length() <= CommandKeyword.FIND.length()) {
+            throw new BuddyException("Find format: find <date> (yyyy-MM-dd)");
+        }
+        String dateString = input.substring(CommandKeyword.FIND.length()).trim();
         if (dateString.isEmpty()) {
             throw new BuddyException("Find format: find <date> (yyyy-MM-dd)");
         }

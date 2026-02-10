@@ -1,8 +1,7 @@
 package buddy.command;
 
 import buddy.BuddyException;
-import buddy.Constants;
-import buddy.Parser;
+import buddy.CommandKeyword;
 import buddy.Storage;
 import buddy.Ui;
 import buddy.task.TaskList;
@@ -28,22 +27,14 @@ public class UnmarkCommand extends Command {
      */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
-        try {
-            int taskIndex = Parser.parseTaskNumber(userInput, Constants.UNMARK_LENGTH);
-            // Check for valid task index
-            if (taskIndex < 0 || taskIndex >= taskList.size()) {
-                throw new BuddyException("Task number does not exist.");
-            }
+        int taskIndex = parseValidatedIndex(userInput, CommandKeyword.UNMARK.length(), taskList);
 
-            // Mark the task as not done
-            taskList.getTask(taskIndex).markAsUndone();
-            saveTasks(taskList, ui, storage);
-            ui.printBox(
-                "OK, I've marked this task as not done yet:",
-                "  " + taskList.getTask(taskIndex)
-            );
-        } catch (NumberFormatException e) {
-            throw new BuddyException("Please provide a valid task number.");
-        }
+        // Mark the task as not done
+        taskList.getTask(taskIndex).markAsUndone();
+        saveTasks(taskList, ui, storage);
+        ui.printBox(
+            "OK, I've marked this task as not done yet:",
+            "  " + taskList.getTask(taskIndex)
+        );
     }
 }

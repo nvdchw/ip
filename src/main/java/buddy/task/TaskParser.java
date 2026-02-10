@@ -1,6 +1,7 @@
 package buddy.task;
 
 import buddy.BuddyException;
+import buddy.Constants;
 
 /**
  * TaskParser handles parsing tasks from file format strings.
@@ -14,30 +15,23 @@ public class TaskParser {
      * @throws BuddyException if the line format is invalid
      */
     public static Task parseFromFile(String line) throws BuddyException {
-        // Check for valid format
-        String[] parts = line.split(" \\| ");
-        if (parts.length < 3) {
-            throw new BuddyException("Invalid file format");
-        }
+        String[] parts = line.split(TaskFormat.DELIMITER_REGEX);
+        requirePartsLength(parts, Constants.MIN_TASK_PARTS, "Invalid file format");
 
         // Extract common fields
         String type = parts[0];
-        boolean isDone = parts[1].equals("1");
+        boolean isDone = parseDoneFlag(parts[1]);
         String description = parts[2];
 
         // Create task based on type
         Task task = switch (type) {
-        case "T" -> new Todo(description);
-        case "D" -> {
-            if (parts.length < 4) {
-                throw new BuddyException("Invalid deadline format");
-            }
+        case TaskFormat.TYPE_TODO -> new Todo(description);
+        case TaskFormat.TYPE_DEADLINE -> {
+            requirePartsLength(parts, Constants.MIN_DEADLINE_PARTS, "Invalid deadline format");
             yield new Deadline(description, parts[3]);
         }
-        case "E" -> {
-            if (parts.length < 5) {
-                throw new BuddyException("Invalid event format");
-            }
+        case TaskFormat.TYPE_EVENT -> {
+            requirePartsLength(parts, Constants.MIN_EVENT_PARTS, "Invalid event format");
             yield new Event(description, parts[3], parts[4]);
         }
         default -> throw new BuddyException("Unknown task type: " + type);
@@ -49,5 +43,22 @@ public class TaskParser {
         }
 
         return task;
+    }
+
+    private static void requirePartsLength(String[] parts, int minLength, String errorMessage)
+            throws BuddyException {
+        if (parts.length < minLength) {
+            throw new BuddyException(errorMessage);
+        }
+    }
+
+    private static boolean parseDoneFlag(String flag) throws BuddyException {
+        if (TaskFormat.DONE_FLAG_TRUE.equals(flag)) {
+            return true;
+        }
+        if (TaskFormat.DONE_FLAG_FALSE.equals(flag)) {
+            return false;
+        }
+        throw new BuddyException("Invalid done flag: " + flag);
     }
 }
