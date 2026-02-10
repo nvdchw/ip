@@ -23,6 +23,8 @@ public class Parser {
      * @return the command type
      */
     public static Command parseCommand(String input) throws BuddyException {
+        assert input != null : "Input should not be null";
+        assert !input.trim().isEmpty() : "Input should not be empty";
         String trimmed = input.trim();
         int space = trimmed.indexOf(' ');
         String keyword = (space == -1) ? trimmed : trimmed.substring(0, space);
@@ -48,6 +50,8 @@ public class Parser {
      * @throws BuddyException if the task number is invalid
      */
     public static int parseTaskNumber(String input, int commandLength) throws BuddyException {
+        assert input != null : "Input should not be null";
+        assert commandLength >= 0 : "Command length should be non-negative";
         try {
             String numberStr = input.substring(commandLength).trim();
             int taskNumber = Integer.parseInt(numberStr);
@@ -64,6 +68,7 @@ public class Parser {
      * @throws BuddyException if the description is empty
      */
     public static String parseTodoDescription(String input) throws BuddyException {
+        assert input != null : "Input should not be null";
         if (input.length() <= CommandKeyword.TODO.length()) {
             throw new BuddyException("A todo needs a description.");
         }
@@ -81,6 +86,7 @@ public class Parser {
      * @throws BuddyException if the format is invalid
      */
     public static String[] parseDeadline(String input) throws BuddyException {
+        assert input != null : "Input should not be null";
         if (input.length() <= CommandKeyword.DEADLINE.length()) {
             throw new BuddyException("Deadline format: deadline <desc> /by <time>");
         }
@@ -105,6 +111,7 @@ public class Parser {
      * @throws BuddyException if the format is invalid
      */
     public static String[] parseEvent(String input) throws BuddyException {
+        assert input != null : "Input should not be null";
         if (input.length() <= CommandKeyword.EVENT.length()) {
             throw new BuddyException("Event format: event <desc> /from <start> /to <end>");
         }
@@ -130,6 +137,7 @@ public class Parser {
      * @throws BuddyException if the date is missing
      */
     public static String parseFindDate(String input) throws BuddyException {
+        assert input != null : "Input should not be null";
         if (input.length() <= CommandKeyword.FIND.length()) {
             throw new BuddyException("Find format: find <date> (yyyy-MM-dd)");
         }

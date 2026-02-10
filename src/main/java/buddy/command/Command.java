@@ -64,6 +64,9 @@ public abstract class Command {
      * @param storage The storage handler.
      */
     protected void saveTasks(TaskList taskList, Ui ui, Storage storage) {
+        assert taskList != null : "TaskList should not be null";
+        assert storage != null : "Storage should not be null";
+        assert ui != null : "Ui should not be null";
         try {
             storage.save(new ArrayList<>(taskList.toFileFormat()));
         } catch (BuddyException e) {
