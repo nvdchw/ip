@@ -35,12 +35,6 @@ public class TodoCommand extends Command {
 
         // Create and add the todo task
         Task task = new Todo(description, tag);
-        taskList.addTask(task);
-        saveTasks(taskList, ui, storage);
-        ui.printBox(
-            "Got it. I've added this task:",
-            "  " + task,
-            "Now you have " + taskList.size() + " tasks in the list."
-        );
+        addAndReport(task, taskList, ui, storage);
     }
 }

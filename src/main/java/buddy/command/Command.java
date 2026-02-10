@@ -6,12 +6,17 @@ import buddy.BuddyException;
 import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
+import buddy.task.Task;
 import buddy.task.TaskList;
 
 /**
  * Abstract base class for all commands.
  */
 public abstract class Command {
+    @FunctionalInterface
+    protected interface TaskSupplier {
+        Task get();
+    }
     /**
      * Executes the command.
      *
@@ -71,6 +76,42 @@ public abstract class Command {
             storage.save(new ArrayList<>(taskList.toFileFormat()));
         } catch (BuddyException e) {
             ui.showError("Error saving tasks: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Adds a task, saves it, and prints the standard confirmation message.
+     *
+     * @param task the task to add
+     * @param taskList the task list to add to
+     * @param ui the user interface for output
+     * @param storage the storage handler for saving tasks
+     */
+    protected void addAndReport(Task task, TaskList taskList, Ui ui, Storage storage) {
+        taskList.addTask(task);
+        saveTasks(taskList, ui, storage);
+        ui.printBox(
+            "Got it. I've added this task:",
+            "  " + task,
+            "Now you have " + taskList.size() + " tasks in the list."
+        );
+    }
+
+    /**
+     * Adds a task built by the supplier, handling parse errors, then reports.
+     *
+     * @param taskSupplier supplier that builds the task
+     * @param taskList the task list to add to
+     * @param ui the user interface for output
+     * @param storage the storage handler for saving tasks
+     * @throws BuddyException if task construction fails
+     */
+    protected void addAndReport(TaskSupplier taskSupplier, TaskList taskList, Ui ui, Storage storage)
+            throws BuddyException {
+        try {
+            addAndReport(taskSupplier.get(), taskList, ui, storage);
+        } catch (IllegalArgumentException e) {
+            throw new BuddyException(e.getMessage());
         }
     }
 }

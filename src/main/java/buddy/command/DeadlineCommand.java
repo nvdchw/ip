@@ -5,7 +5,6 @@ import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
 import buddy.task.Deadline;
-import buddy.task.Task;
 import buddy.task.TaskList;
 
 
@@ -35,18 +34,6 @@ public class DeadlineCommand extends Command {
         String by = parts[1];
         String tag = parts[2];
 
-        try {
-            // Create and add the deadline task
-            Task task = new Deadline(description, by, tag);
-            taskList.addTask(task);
-            saveTasks(taskList, ui, storage);
-            ui.printBox(
-                "Got it. I've added this task:",
-                "  " + task,
-                "Now you have " + taskList.size() + " tasks in the list."
-            );
-        } catch (IllegalArgumentException e) {
-            throw new BuddyException(e.getMessage());
-        }
+        addAndReport(() -> new Deadline(description, by, tag), taskList, ui, storage);
     }
 }
