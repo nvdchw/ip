@@ -49,18 +49,18 @@ public class DialogBox extends HBox {
         dialog.getStyleClass().add("reply-label");
     }
 
-    private void changeDialogStyle(String commandType) {
-        switch(commandType) {
-        case "ListCommand":
+    private void changeDialogStyle(CommandType commandType) {
+        switch (commandType) {
+        case LIST:
             dialog.getStyleClass().add("list-label");
             break;
-        case "MarkCommand":
+        case MARK:
             dialog.getStyleClass().add("marked-label");
             break;
-        case "DeleteCommand":
+        case DELETE:
             dialog.getStyleClass().add("delete-label");
             break;
-        case "Error":
+        case ERROR:
             dialog.getStyleClass().add("error-label");
             break;
         default:
@@ -72,7 +72,7 @@ public class DialogBox extends HBox {
         return new DialogBox(text, img);
     }
 
-    public static DialogBox getBuddyDialog(String text, Image img, String commandType) {
+    public static DialogBox getBuddyDialog(String text, Image img, CommandType commandType) {
         var db = new DialogBox(text, img);
         db.flip();
         db.changeDialogStyle(commandType);

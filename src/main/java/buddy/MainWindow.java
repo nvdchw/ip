@@ -22,8 +22,8 @@ public class MainWindow extends AnchorPane {
 
     private Buddy buddy;
 
-    private final Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
-    private final Image buddyImage = new Image(this.getClass().getResourceAsStream("/images/DaBuddy.png"));
+    private final Image userImage = loadImage("/images/DaUser.png");
+    private final Image buddyImage = loadImage("/images/DaBuddy.png");
 
     @FXML
     public void initialize() {
@@ -34,6 +34,14 @@ public class MainWindow extends AnchorPane {
         buddy = b;
     }
 
+    private Image loadImage(String path) {
+        var stream = MainWindow.class.getResourceAsStream(path);
+        if (stream == null) {
+            throw new IllegalStateException("Missing image resource: " + path);
+        }
+        return new Image(stream);
+    }
+
     /**
      * Creates two dialog boxes, one echoing user input and the other containing Duke's reply and then appends them to
      * the dialog container. Clears the user input after processing.
@@ -42,14 +50,14 @@ public class MainWindow extends AnchorPane {
     private void handleUserInput() {
         String input = userInput.getText();
         String response = buddy.getResponse(input);
-        String commandType = buddy.getCommandType();
+        CommandType commandType = buddy.getCommandType();
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
                 DialogBox.getBuddyDialog(response, buddyImage, commandType)
         );
         userInput.clear();
 
-        if (commandType.equals("ByeCommand")) {
+        if (commandType == CommandType.BYE) {
             System.exit(0);
         }
     }

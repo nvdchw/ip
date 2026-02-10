@@ -18,7 +18,7 @@ public class Buddy {
     private final Ui ui;
     private final Storage storage;
     private final TaskList taskList;
-    private String commandType;
+    private CommandType commandType;
 
     /**
      * Constructs a Buddy application instance.
@@ -36,15 +36,15 @@ public class Buddy {
         try {
             Command c = Parser.parseCommand(input);
             c.execute(taskList, ui, storage);
-            commandType = c.getClass().getSimpleName();
+            commandType = CommandType.fromCommand(c);
             String output = ui.getLastOutput();
             return output.isEmpty() ? c.toString() : output;
         } catch (BuddyException e) {
-            commandType = "Error";
+            commandType = CommandType.ERROR;
             return "Error: " + e.getMessage();
         }
     }
-    public String getCommandType() {
+    public CommandType getCommandType() {
         return commandType;
     }
 
