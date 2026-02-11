@@ -9,5 +9,5 @@ T | 0 | read book | fun
 T | 0 | do work
 D | 1 | deadline | 2026-12-05 1800 | important
 D | 0 | deadline | 2026-12-05 1800
-T | 1 | something
 T | 0 | something
+T | 1 | something

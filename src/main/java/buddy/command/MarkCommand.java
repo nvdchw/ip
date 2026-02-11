@@ -27,14 +27,14 @@ public class MarkCommand extends Command {
      */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
-        int taskIndex = parseValidatedIndex(userInput, CommandKeyword.MARK.length(), taskList);
-
-        // Mark the task as done
-        taskList.getTask(taskIndex).markAsDone();
-        saveTasks(taskList, ui, storage);
-        ui.printBox(
-            "Nice! I've marked this task as done:",
-            "  " + taskList.getTask(taskIndex)
+        updateTaskAndReport(
+            userInput,
+            CommandKeyword.MARK.length(),
+            taskList,
+            ui,
+            storage,
+            buddy.task.Task::markAsDone,
+            "Nice! I've marked this task as done:"
         );
     }
 }

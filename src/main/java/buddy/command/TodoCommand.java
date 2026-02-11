@@ -4,7 +4,6 @@ import buddy.BuddyException;
 import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
-import buddy.task.Task;
 import buddy.task.TaskList;
 import buddy.task.Todo;
 
@@ -33,8 +32,6 @@ public class TodoCommand extends Command {
         String description = parts[0];
         String tag = parts[1];
 
-        // Create and add the todo task
-        Task task = new Todo(description, tag);
-        addAndReport(task, taskList, ui, storage);
+        addAndReport(() -> new Todo(description, tag), taskList, ui, storage);
     }
 }

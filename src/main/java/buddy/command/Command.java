@@ -1,6 +1,7 @@
 package buddy.command;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 import buddy.BuddyException;
 import buddy.Parser;
@@ -80,20 +81,32 @@ public abstract class Command {
     }
 
     /**
-     * Adds a task, saves it, and prints the standard confirmation message.
+     * Updates a task (mark/unmark), saves, and prints a confirmation message.
      *
-     * @param task the task to add
-     * @param taskList the task list to add to
+     * @param userInput the full user input
+     * @param commandLength the command keyword length
+     * @param taskList the task list for lookup
      * @param ui the user interface for output
      * @param storage the storage handler for saving tasks
+     * @param taskUpdater the update action to apply to the task
+     * @param headerMessage the header message for the confirmation box
+     * @throws BuddyException if parsing or validation fails
      */
-    protected void addAndReport(Task task, TaskList taskList, Ui ui, Storage storage) {
-        taskList.addTask(task);
+    protected void updateTaskAndReport(
+            String userInput,
+            int commandLength,
+            TaskList taskList,
+            Ui ui,
+            Storage storage,
+            Consumer<Task> taskUpdater,
+            String headerMessage) throws BuddyException {
+        int taskIndex = parseValidatedIndex(userInput, commandLength, taskList);
+        Task task = taskList.getTask(taskIndex);
+        taskUpdater.accept(task);
         saveTasks(taskList, ui, storage);
         ui.printBox(
-            "Got it. I've added this task:",
-            "  " + task,
-            "Now you have " + taskList.size() + " tasks in the list."
+            headerMessage,
+            "  " + task
         );
     }
 
@@ -106,10 +119,20 @@ public abstract class Command {
      * @param storage the storage handler for saving tasks
      * @throws BuddyException if task construction fails
      */
-    protected void addAndReport(TaskSupplier taskSupplier, TaskList taskList, Ui ui, Storage storage)
-            throws BuddyException {
+    protected void addAndReport(
+            TaskSupplier taskSupplier,
+            TaskList taskList,
+            Ui ui,
+            Storage storage) throws BuddyException {
         try {
-            addAndReport(taskSupplier.get(), taskList, ui, storage);
+            Task task = taskSupplier.get();
+            taskList.addTask(task);
+            saveTasks(taskList, ui, storage);
+            ui.printBox(
+                "Got it. I've added this task:",
+                "  " + task,
+                "Now you have " + taskList.size() + " tasks in the list."
+            );
         } catch (IllegalArgumentException e) {
             throw new BuddyException(e.getMessage());
         }
