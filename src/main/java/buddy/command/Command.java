@@ -1,17 +1,23 @@
 package buddy.command;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 import buddy.BuddyException;
 import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
+import buddy.task.Task;
 import buddy.task.TaskList;
 
 /**
  * Abstract base class for all commands.
  */
 public abstract class Command {
+    @FunctionalInterface
+    protected interface TaskSupplier {
+        Task get();
+    }
     /**
      * Executes the command.
      *
@@ -71,6 +77,64 @@ public abstract class Command {
             storage.save(new ArrayList<>(taskList.toFileFormat()));
         } catch (BuddyException e) {
             ui.showError("Error saving tasks: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Updates a task (mark/unmark), saves, and prints a confirmation message.
+     *
+     * @param userInput the full user input
+     * @param commandLength the command keyword length
+     * @param taskList the task list for lookup
+     * @param ui the user interface for output
+     * @param storage the storage handler for saving tasks
+     * @param taskUpdater the update action to apply to the task
+     * @param headerMessage the header message for the confirmation box
+     * @throws BuddyException if parsing or validation fails
+     */
+    protected void updateTaskAndReport(
+            String userInput,
+            int commandLength,
+            TaskList taskList,
+            Ui ui,
+            Storage storage,
+            Consumer<Task> taskUpdater,
+            String headerMessage) throws BuddyException {
+        int taskIndex = parseValidatedIndex(userInput, commandLength, taskList);
+        Task task = taskList.getTask(taskIndex);
+        taskUpdater.accept(task);
+        saveTasks(taskList, ui, storage);
+        ui.printBox(
+            headerMessage,
+            "  " + task
+        );
+    }
+
+    /**
+     * Adds a task built by the supplier, handling parse errors, then reports.
+     *
+     * @param taskSupplier supplier that builds the task
+     * @param taskList the task list to add to
+     * @param ui the user interface for output
+     * @param storage the storage handler for saving tasks
+     * @throws BuddyException if task construction fails
+     */
+    protected void addAndReport(
+            TaskSupplier taskSupplier,
+            TaskList taskList,
+            Ui ui,
+            Storage storage) throws BuddyException {
+        try {
+            Task task = taskSupplier.get();
+            taskList.addTask(task);
+            saveTasks(taskList, ui, storage);
+            ui.printBox(
+                "Got it. I've added this task:",
+                "  " + task,
+                "Now you have " + taskList.size() + " tasks in the list."
+            );
+        } catch (IllegalArgumentException e) {
+            throw new BuddyException(e.getMessage());
         }
     }
 }

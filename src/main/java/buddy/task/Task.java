@@ -6,6 +6,7 @@ package buddy.task;
 public abstract class Task {
     private final String description;
     private boolean isDone;
+    private final String tag;
 
     /**
      * Constructs a Task with the given description.
@@ -14,8 +15,20 @@ public abstract class Task {
      * @param description the description of the task
      */
     public Task(String description) {
+        this(description, null);
+    }
+
+    /**
+     * Constructs a Task with the given description and tag.
+     * The task is initially marked as not done.
+     *
+     * @param description the description of the task
+     * @param tag the optional tag for the task
+     */
+    public Task(String description, String tag) {
         this.description = description;
         this.isDone = false;
+        this.tag = normaliseTag(tag);
     }
 
     /**
@@ -25,6 +38,15 @@ public abstract class Task {
      */
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * Returns the tag for this task, or null if none is set.
+     *
+     * @return the normalised tag value
+     */
+    public String getTag() {
+        return tag;
     }
 
     /**
@@ -67,6 +89,31 @@ public abstract class Task {
      */
     @Override
     public String toString() {
-        return "[" + getStatusIcon() + "] " + description;
+        return "[" + getStatusIcon() + "] " + description + formatTagForDisplay();
+    }
+
+    protected String formatTagForFile() {
+        return tag == null ? "" : TaskFormat.DELIMITER + tag;
+    }
+
+    private String formatTagForDisplay() {
+        return tag == null ? "" : " #" + tag;
+    }
+
+    /**
+     * Normalises a tag by trimming whitespace and removing leading '#'.
+     *
+     * @param tag the raw tag string
+     * @return the normalised tag, or null if the tag is empty
+     */
+    public static String normaliseTag(String tag) {
+        if (tag == null) {
+            return null;
+        }
+        String trimmed = tag.trim();
+        if (trimmed.startsWith("#")) {
+            trimmed = trimmed.substring(1).trim();
+        }
+        return trimmed.isEmpty() ? null : trimmed;
     }
 }

@@ -27,14 +27,14 @@ public class UnmarkCommand extends Command {
      */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
-        int taskIndex = parseValidatedIndex(userInput, CommandKeyword.UNMARK.length(), taskList);
-
-        // Mark the task as not done
-        taskList.getTask(taskIndex).markAsUndone();
-        saveTasks(taskList, ui, storage);
-        ui.printBox(
-            "OK, I've marked this task as not done yet:",
-            "  " + taskList.getTask(taskIndex)
+        updateTaskAndReport(
+            userInput,
+            CommandKeyword.UNMARK.length(),
+            taskList,
+            ui,
+            storage,
+            buddy.task.Task::markAsUndone,
+            "OK, I've marked this task as not done yet:"
         );
     }
 }

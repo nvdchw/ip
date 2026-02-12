@@ -4,7 +4,6 @@ import buddy.BuddyException;
 import buddy.Parser;
 import buddy.Storage;
 import buddy.Ui;
-import buddy.task.Task;
 import buddy.task.TaskList;
 import buddy.task.Todo;
 
@@ -29,16 +28,10 @@ public class TodoCommand extends Command {
      */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
-        String description = Parser.parseTodoDescription(userInput);
+        String[] parts = Parser.parseTodo(userInput);
+        String description = parts[0];
+        String tag = parts[1];
 
-        // Create and add the todo task
-        Task task = new Todo(description);
-        taskList.addTask(task);
-        saveTasks(taskList, ui, storage);
-        ui.printBox(
-            "Got it. I've added this task:",
-            "  " + task,
-            "Now you have " + taskList.size() + " tasks in the list."
-        );
+        addAndReport(() -> new Todo(description, tag), taskList, ui, storage);
     }
 }

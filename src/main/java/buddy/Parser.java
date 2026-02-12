@@ -61,22 +61,25 @@ public class Parser {
         }
     }
     /**
-     * Parses the description from a todo command.
+     * Parses a todo command into description and optional tag.
      *
      * @param input the user input string
-     * @return the task description
+     * @return an array with [description, tag]
      * @throws BuddyException if the description is empty
      */
-    public static String parseTodoDescription(String input) throws BuddyException {
+    public static String[] parseTodo(String input) throws BuddyException {
         assert input != null : "Input should not be null";
         if (input.length() <= CommandKeyword.TODO.length()) {
             throw new BuddyException("A todo needs a description.");
         }
-        String description = input.substring(CommandKeyword.TODO.length()).trim();
+        String content = input.substring(CommandKeyword.TODO.length()).trim();
+        String[] contentParts = splitTag(content);
+        String description = contentParts[0];
+        String tag = contentParts[1];
         if (description.isEmpty()) {
             throw new BuddyException("A todo needs a description.");
         }
-        return description;
+        return new String[]{description, tag};
     }
     /**
      * Parses a deadline command into description and deadline time.
@@ -91,17 +94,20 @@ public class Parser {
             throw new BuddyException("Deadline format: deadline <desc> /by <time>");
         }
         String content = input.substring(CommandKeyword.DEADLINE.length()).trim();
+        String[] contentParts = splitTag(content);
+        String contentWithoutTag = contentParts[0];
+        String tag = contentParts[1];
 
-        int byIndex = content.indexOf(Constants.DEADLINE_BY_DELIMITER);
-        if (content.isEmpty() || byIndex == -1) {
+        int byIndex = contentWithoutTag.indexOf(Constants.DEADLINE_BY_DELIMITER);
+        if (contentWithoutTag.isEmpty() || byIndex == -1) {
             throw new BuddyException("Deadline format: deadline <desc> /by <time>");
         }
-        String description = content.substring(0, byIndex).trim();
-        String by = content.substring(byIndex + Constants.DEADLINE_BY_DELIMITER.length()).trim();
+        String description = contentWithoutTag.substring(0, byIndex).trim();
+        String by = contentWithoutTag.substring(byIndex + Constants.DEADLINE_BY_DELIMITER.length()).trim();
         if (description.isEmpty() || by.isEmpty()) {
             throw new BuddyException("Deadline needs description and time.");
         }
-        return new String[]{description, by};
+        return new String[]{description, by, tag};
     }
     /**
      * Parses an event command into description, start time, and end time.
@@ -116,18 +122,22 @@ public class Parser {
             throw new BuddyException("Event format: event <desc> /from <start> /to <end>");
         }
         String content = input.substring(CommandKeyword.EVENT.length()).trim();
-        int fromIndex = content.indexOf(Constants.EVENT_FROM_DELIMITER);
-        int toIndex = content.indexOf(Constants.EVENT_TO_DELIMITER);
-        if (content.isEmpty() || fromIndex == -1 || toIndex == -1 || toIndex < fromIndex) {
+        String[] contentParts = splitTag(content);
+        String contentWithoutTag = contentParts[0];
+        String tag = contentParts[1];
+        int fromIndex = contentWithoutTag.indexOf(Constants.EVENT_FROM_DELIMITER);
+        int toIndex = contentWithoutTag.indexOf(Constants.EVENT_TO_DELIMITER);
+        if (contentWithoutTag.isEmpty() || fromIndex == -1 || toIndex == -1 || toIndex < fromIndex) {
             throw new BuddyException("Event format: event <desc> /from <start> /to <end>");
         }
-        String description = content.substring(0, fromIndex).trim();
-        String from = content.substring(fromIndex + Constants.EVENT_FROM_DELIMITER.length(), toIndex).trim();
-        String to = content.substring(toIndex + Constants.EVENT_TO_DELIMITER.length()).trim();
+        String description = contentWithoutTag.substring(0, fromIndex).trim();
+        String from = contentWithoutTag.substring(
+                fromIndex + Constants.EVENT_FROM_DELIMITER.length(), toIndex).trim();
+        String to = contentWithoutTag.substring(toIndex + Constants.EVENT_TO_DELIMITER.length()).trim();
         if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
             throw new BuddyException("Event needs description, start, and end time.");
         }
-        return new String[]{description, from, to};
+        return new String[]{description, from, to, tag};
     }
     /**
      * Parses the date from a find command.
@@ -139,12 +149,31 @@ public class Parser {
     public static String parseFindDate(String input) throws BuddyException {
         assert input != null : "Input should not be null";
         if (input.length() <= CommandKeyword.FIND.length()) {
-            throw new BuddyException("Find format: find <date> (yyyy-MM-dd)");
+            throw new BuddyException("Find format: find <keyword|date|#tag>");
         }
         String dateString = input.substring(CommandKeyword.FIND.length()).trim();
         if (dateString.isEmpty()) {
-            throw new BuddyException("Find format: find <date> (yyyy-MM-dd)");
+            throw new BuddyException("Find format: find <keyword|date|#tag>");
         }
         return dateString;
+    }
+
+    private static String[] splitTag(String content) throws BuddyException {
+        int tagIndex = content.indexOf(Constants.TAG_DELIMITER);
+        if (tagIndex == -1) {
+            return new String[]{content, null};
+        }
+        if (content.indexOf(Constants.TAG_DELIMITER, tagIndex + Constants.TAG_DELIMITER.length()) != -1) {
+            throw new BuddyException("Please provide only one tag.");
+        }
+        String tagValue = content.substring(tagIndex + Constants.TAG_DELIMITER.length()).trim();
+        if (tagValue.isEmpty()) {
+            throw new BuddyException("Tag format: /tag <tag>");
+        }
+        String contentWithoutTag = content.substring(0, tagIndex).trim();
+        if (contentWithoutTag.isEmpty()) {
+            return new String[]{"", tagValue};
+        }
+        return new String[]{contentWithoutTag, tagValue};
     }
 }

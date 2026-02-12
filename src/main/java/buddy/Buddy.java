@@ -80,7 +80,6 @@ public class Buddy {
     public void run() {
         ui.showWelcome();
         String userInput = ui.readCommand();
-
         handleUserInputs(userInput);
 
         ui.close();

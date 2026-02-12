@@ -12,4 +12,5 @@ public class Constants {
     public static final String DEADLINE_BY_DELIMITER = " /by ";
     public static final String EVENT_FROM_DELIMITER = " /from ";
     public static final String EVENT_TO_DELIMITER = " /to ";
+    public static final String TAG_DELIMITER = " /tag ";
 }
