@@ -1,5 +1,5 @@
 E | 1 | something | 2026-12-02 1800 | 2026-12-05 1800
-D | 0 | deadline | 2026-12-06 1900
+D | 1 | deadline | 2026-12-06 1900
 T | 1 | something else
 E | 0 | event | 2026-01-01 1400 | 2026-01-02 2115
 D | 0 | test | 2026-01-14 1500
@@ -11,3 +11,4 @@ D | 1 | deadline | 2026-12-05 1800 | important
 D | 0 | deadline | 2026-12-05 1800
 T | 0 | something
 T | 1 | something
+T | 0 | something | important

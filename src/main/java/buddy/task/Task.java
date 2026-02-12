@@ -41,6 +41,15 @@ public abstract class Task {
     }
 
     /**
+     * Returns the tag for this task, or null if none is set.
+     *
+     * @return the normalised tag value
+     */
+    public String getTag() {
+        return tag;
+    }
+
+    /**
      * Marks this task as done.
      */
     public void markAsDone() {
@@ -91,7 +100,13 @@ public abstract class Task {
         return tag == null ? "" : " #" + tag;
     }
 
-    private static String normaliseTag(String tag) {
+    /**
+     * Normalises a tag by trimming whitespace and removing leading '#'.
+     *
+     * @param tag the raw tag string
+     * @return the normalised tag, or null if the tag is empty
+     */
+    public static String normaliseTag(String tag) {
         if (tag == null) {
             return null;
         }

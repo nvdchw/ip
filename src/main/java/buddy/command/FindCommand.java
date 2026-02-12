@@ -38,6 +38,11 @@ public class FindCommand extends Command {
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
         String searchTerm = Parser.parseFindDate(userInput);
 
+        if (isTagSearch(searchTerm)) {
+            findByTag(taskList, ui, searchTerm);
+            return;
+        }
+
         // Try to parse as date first
         try {
             LocalDate searchDate = DateTimeUtil.parseFindDate(searchTerm);
@@ -98,6 +103,38 @@ public class FindCommand extends Command {
             }
             ui.printBox(lines);
         }
+    }
+
+    /**
+     * Searches for tasks matching a tag.
+     */
+    private void findByTag(TaskList taskList, Ui ui, String rawTag) throws BuddyException {
+        String tag = Task.normaliseTag(rawTag);
+        if (tag == null) {
+            throw new BuddyException("Find format: find #<tag>");
+        }
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+        for (Task task : taskList.getAllTasks()) {
+            String taskTag = task.getTag();
+            if (taskTag != null && taskTag.equalsIgnoreCase(tag)) {
+                matchingTasks.add(task);
+            }
+        }
+
+        if (matchingTasks.isEmpty()) {
+            ui.printBox("No tasks found with tag: #" + tag);
+        } else {
+            String[] lines = new String[matchingTasks.size() + 1];
+            lines[0] = "Tasks with tag #" + tag + ":";
+            for (int i = 0; i < matchingTasks.size(); i++) {
+                lines[i + 1] = (i + 1) + "." + matchingTasks.get(i);
+            }
+            ui.printBox(lines);
+        }
+    }
+
+    private boolean isTagSearch(String searchTerm) {
+        return searchTerm.trim().startsWith("#");
     }
 
     private boolean matchesDate(Task task, LocalDate searchDate) {

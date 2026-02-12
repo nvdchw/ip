@@ -149,11 +149,11 @@ public class Parser {
     public static String parseFindDate(String input) throws BuddyException {
         assert input != null : "Input should not be null";
         if (input.length() <= CommandKeyword.FIND.length()) {
-            throw new BuddyException("Find format: find <date> (yyyy-MM-dd)");
+            throw new BuddyException("Find format: find <keyword|date|#tag>");
         }
         String dateString = input.substring(CommandKeyword.FIND.length()).trim();
         if (dateString.isEmpty()) {
-            throw new BuddyException("Find format: find <date> (yyyy-MM-dd)");
+            throw new BuddyException("Find format: find <keyword|date|#tag>");
         }
         return dateString;
     }
