@@ -56,14 +56,16 @@ public class Ui {
                    |____/ \\____/|_____/|_____/  |_|
                 """;
         System.out.println(logo);
-        printBox("Hello I'm Buddy!", "What can I do for you?");
+        printBox("Hey there! I'm Buddy, your personal task companion!",
+                "Ready to help you stay organised? What would you like to do?");
+
     }
 
     /**
      * Shows the goodbye message.
      */
     public void showGoodbye() {
-        printBox("Bye. Hope to see you again soon!");
+        printBox("All done! Keep crushing those tasks! See you soon!");
     }
 
     /**
@@ -72,7 +74,7 @@ public class Ui {
      * @param message the error message
      */
     public void showError(String message) {
-        printBox("Oh No! " + message);
+        printBox("Oops! " + message, "Want to try that again?");
     }
 
     /**

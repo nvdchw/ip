@@ -34,7 +34,7 @@ public class MarkCommand extends Command {
             ui,
             storage,
             buddy.task.Task::markAsDone,
-            "Nice! I've marked this task as done:"
+            "Awesome! You crushed this task: "
         );
     }
 }

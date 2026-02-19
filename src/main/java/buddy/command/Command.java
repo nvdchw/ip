@@ -129,7 +129,7 @@ public abstract class Command {
             taskList.addTask(task);
             saveTasks(taskList, ui, storage);
             ui.printBox(
-                "Got it. I've added this task:",
+                "Got it! I've added this task to your list:",
                 "  " + task,
                 "Now you have " + taskList.size() + " tasks in the list."
             );

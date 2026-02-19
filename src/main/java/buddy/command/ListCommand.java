@@ -20,7 +20,7 @@ public class ListCommand extends Command {
     public void execute(TaskList taskList, Ui ui, Storage storage) throws BuddyException {
         // If no tasks, inform the user
         if (taskList.isEmpty()) {
-            ui.printBox("No tasks yet. Add one to get started!");
+            ui.printBox("Your list is empty! Time to add some goals and get started?");
             return;
         }
 
