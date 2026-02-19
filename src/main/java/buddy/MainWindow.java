@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+
 /**
  * Controller for the main GUI.
  */
@@ -29,9 +30,18 @@ public class MainWindow extends AnchorPane {
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
     }
-    /** Injects the Duke instance */
+    /** Injects the Buddy instance */
     public void setBuddy(Buddy b) {
         buddy = b;
+        displayWelcomeMessage();
+    }
+
+    private void displayWelcomeMessage() {
+        String welcomeMessage = "Hey there! I'm Buddy, your personal task companion!\n"
+                + "Ready to help you stay organised? What would you like to do?";
+        dialogContainer.getChildren().add(
+                DialogBox.getBuddyDialog(welcomeMessage, buddyImage, CommandType.LIST)
+        );
     }
 
     private Image loadImage(String path) {
@@ -43,8 +53,8 @@ public class MainWindow extends AnchorPane {
     }
 
     /**
-     * Creates two dialog boxes, one echoing user input and the other containing Duke's reply and then appends them to
-     * the dialog container. Clears the user input after processing.
+     * Creates two dialog boxes, one echoing user input and the other containing Buddy's reply and then appends them
+     * to the dialog container. Clears the user input after processing.
      */
     @FXML
     private void handleUserInput() {
