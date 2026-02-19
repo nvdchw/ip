@@ -1,7 +1,7 @@
 E | 0 | Lunar New Year | 2026-02-17 0000 | 2026-02-18 2359
 D | 0 | CS2103 Week 6 IP Tasks | 2026-02-20 1800
 D | 0 | CS2103 Week 6 Tutorial Tasks | 2026-02-20 1600
-T | 1 | Submit Internship Application
+T | 1 | Submit Internship Application | important
 T | 0 | Watch Lecture Video Recordings
-E | 0 | Reccess Week | 2026-02-22 0000 | 2026-03-01 2359
-T | 0 | Revise for Midterms
+E | 0 | Recess Week | 2026-02-22 0000 | 2026-03-01 2359
+T | 0 | Revise for Midterms | important
