@@ -198,7 +198,7 @@ All done! Keep crushing those tasks! See you soon!
 
 ## Tags
 
-You can organize tasks using tags by adding `/tag TAG` at the end of any task command. Tags help you categorize and find related tasks easily.
+You can organise tasks using tags by adding `/tag TAG` at the end of any task command. Tags help you categorise and find related tasks easily.
 
 ## Data Storage
 
@@ -217,9 +217,9 @@ If something goes wrong, Buddy will let you know with a friendly error message. 
 
 - **Invalid task number** - The task number doesn't exist in your list
 - **Missing description** - You forgot to add a description for the task
-- **Invalid date format** - The date/time format wasn't recognized
+- **Invalid date format** - The date/time format wasn't recognised
 - **Missing parameters** - Required fields like `/by` or `/from /to` are missing
 
 ---
 
-Need help? Just start typing and Buddy will guide you through! 🎉
+Need help? Just start typing and Buddy will guide you through!
